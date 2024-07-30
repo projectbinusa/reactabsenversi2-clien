@@ -2,10 +2,10 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
-import Sidebar from "../../../components/SidebarUser";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
 import { API_DUMMY } from "../../../utils/api";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function DetailLokasiSA() {
   const { idLokasi } = useParams();
@@ -30,11 +30,11 @@ function DetailLokasiSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <Navbar />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className=" sm:ml-64 content-page container p-8  ml-14 md:ml-64 mt-12">
           <div className="p-4">
@@ -55,9 +55,7 @@ function DetailLokasiSA() {
 
                 <div className="mt-5 text-left">
                   {/* <!-- Form Input --> */}
-                  <form
-
-                  >
+                  <form>
                     {/* <!-- Nama & Alamat Input --> */}
                     <div className="grid md:grid-cols-2 md:gap-6">
                       <div className="relative z-0 w-full mb-6 group">
@@ -65,7 +63,7 @@ function DetailLokasiSA() {
                           type="text"
                           name="nama_lokasi"
                           id="nama_lokasi"
-                          value={namaLokasi ? namaLokasi  : "kosong"}
+                          value={namaLokasi ? namaLokasi : "kosong"}
                           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                           placeholder=" "
                           autoComplete="off"

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NavbarSuper from "../../../components/NavbarSuper";
-import Sidebar from "../../../components/SidebarUser";
+import Navbar from "../../../components/NavbarSuper";
 import {
   useHistory,
   useParams,
@@ -10,6 +9,7 @@ import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../../utils/api";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function EditUser() {
   const [username, setUsername] = useState("");
@@ -24,9 +24,7 @@ function EditUser() {
 
   const getUser = async () => {
     try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/user/getUserBy/${id}`
-      );
+      const res = await axios.get(`${API_DUMMY}/api/user/getUserBy/${id}`);
       setUsername(res.data.username);
       setIdJabatan(res.data.jabatan ? res.data.jabatan.idJabatan : "");
       setIdShift(res.data.shift ? res.data.shift.id : "");
@@ -99,11 +97,11 @@ function EditUser() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <NavbarSuper />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-14 md:ml-64 mt-12">
           <div className="p-4">

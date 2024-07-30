@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarAdmin";
-import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo, faPrint } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Pagination } from "flowbite-react";
 import { API_DUMMY } from "../../../utils/api";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function Lembur() {
   const [lembur, setLembur] = useState([]);
@@ -19,14 +19,11 @@ function Lembur() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/lembur/getall`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_DUMMY}/api/lembur/getall`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setLembur(response.data);
     } catch (error) {
@@ -51,11 +48,17 @@ function Lembur() {
   useEffect(() => {
     const filteredData = lembur.filter(
       (lembur) =>
-        (lembur.user?.username.toLowerCase().includes(searchTerm.toLowerCase()) ??
+        (lembur.user?.username
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ??
           false) ||
-        (lembur.keteranganLembur?.toLowerCase().includes(searchTerm.toLowerCase()) ??
+        (lembur.keteranganLembur
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ??
           false) ||
-        (formatDate(lembur.tanggalLembur)?.toLowerCase().includes(searchTerm.toLowerCase()) ??
+        (formatDate(lembur.tanggalLembur)
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ??
           false)
     );
     setTotalPages(Math.ceil(filteredData.length / limit));
@@ -78,9 +81,13 @@ function Lembur() {
     (lembur) =>
       (lembur.user?.username.toLowerCase().includes(searchTerm.toLowerCase()) ??
         false) ||
-      (lembur.keteranganLembur?.toLowerCase().includes(searchTerm.toLowerCase()) ??
+      (lembur.keteranganLembur
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ??
         false) ||
-      (formatDate(lembur.tanggalLembur)?.toLowerCase().includes(searchTerm.toLowerCase()) ??
+      (formatDate(lembur.tanggalLembur)
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ??
         false)
   );
 
@@ -131,11 +138,11 @@ function Lembur() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <Navbar />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-0 md:ml-64 mt-12">
           <div className="p-4">
