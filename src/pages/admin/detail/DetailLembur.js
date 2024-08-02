@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import NavbarAdmin from "../../../components/NavbarAdmin";
-import Sidebar from "../../../components/SidebarUser";
+import Navbar from "../../../components/NavbarAdmin";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { API_DUMMY } from "../../../utils/api";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function DetailLembur() {
   const [lembur, setLembur] = useState(null);
@@ -13,9 +13,7 @@ function DetailLembur() {
 
   const getLemburId = async () => {
     try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/lembur/getByid/${id}`
-      );
+      const res = await axios.get(`${API_DUMMY}/api/lembur/getByid/${id}`);
       setLembur(res.data);
     } catch (error) {
       console.log(error);
@@ -33,11 +31,11 @@ function DetailLembur() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <NavbarAdmin />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-14 md:ml-64 mt-12">
           <div className="p-4">

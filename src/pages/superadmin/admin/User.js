@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NavbarSuper from "../../../components/NavbarSuper";
-import Sidebar from "../../../components/SidebarUser";
+import Navbar from "../../../components/NavbarSuper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfo,
@@ -12,6 +11,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Pagination } from "flowbite-react";
 import { API_DUMMY } from "../../../utils/api";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function User() {
   const [userData, setUserData] = useState([]);
@@ -24,14 +24,11 @@ function User() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/user/get-allUser`,
-        {
-          headers: {
-            Authorization: `${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_DUMMY}/api/user/get-allUser`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
 
       setUserData(response.data);
     } catch (error) {
@@ -51,14 +48,11 @@ function User() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(
-            `${API_DUMMY}/api/user/delete-user/` + id,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
+          await axios.delete(`${API_DUMMY}/api/user/delete-user/` + id, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
 
           Swal.fire({
             icon: "success",
@@ -124,11 +118,11 @@ function User() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <NavbarSuper />
+        <SidebarNavbar />
       </div>
-      <div className="flex flex-1">
-        <div className="fixed">
-          <Sidebar />
+      <div className="flex h-full">
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className="sm:ml-64 content-page container p-8  ml-0 md:ml-64">
           <div className="p-5 mt-10">

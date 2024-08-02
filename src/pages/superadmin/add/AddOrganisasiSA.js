@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
-import Sidebar from "../../../components/SidebarUser";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../../utils/api";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 function AddOrganisasiSA() {
   const [showPassword, setShowPassword] = useState(false);
   const [emailOrganisasi, setEmailOrganisasi] = useState("");
@@ -55,14 +55,11 @@ function AddOrganisasiSA() {
         provinsi: provinsi,
         nomerTelepon: nomerTelepon,
         emailOrganisasi: emailOrganisasi,
-       };
-
-
+      };
 
       const response = await axios.post(
         `${API_DUMMY}/api/organisasi/tambahByIdSuperAdmin/${idSuperAdmin}?idAdmin=${idAdmin}`,
-        organisasi,
-
+        organisasi
       );
       Swal.fire("Berhasil", "Berhasil menambahkan data", "success");
       window.location.href = "/superadmin/organisasi";
@@ -81,11 +78,11 @@ function AddOrganisasiSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <Navbar />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
       </div>
       <div className=" sm:ml-64 content-page p-8  ml-14 md:ml-64 mb-12">

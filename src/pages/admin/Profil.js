@@ -3,7 +3,6 @@ import { Tabs } from "flowbite-react";
 import { HiAdjustments, HiClipboardList, HiUserCircle } from "react-icons/hi";
 import { MdDashboard } from "react-icons/md";
 import Navbar from "../../components/NavbarAdmin";
-import Sidebar from "../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +10,7 @@ import axios from "axios";
 import Loader from "../../components/Loader";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../utils/api";
+import SidebarNavbar from "../../components/SidebarNavbar";
 function Profil() {
   const [showPassword, setShowPassword] = useState(false);
   const [imageAdmin, setImageAdmin] = useState("");
@@ -32,14 +32,11 @@ function Profil() {
 
   const getProfile = async () => {
     try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/admin/getById/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_DUMMY}/api/admin/getById/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setProfile(response.data);
       setImageAdmin(response.data.imageAdmin);
@@ -94,7 +91,6 @@ function Profil() {
     setSelectedFile(file);
     setPreview(URL.createObjectURL(file));
   };
-
 
   const editPassword = async (e) => {
     e.preventDefault();
@@ -169,9 +165,13 @@ function Profil() {
     <>
       {loading && <Loader />}
       <div className="flex flex-col h-screen">
-        <Navbar />
+        <div className="sticky top-0 z-50">
+          <SidebarNavbar />
+        </div>
         <div className="flex h-full">
-          <Sidebar />
+          <div className="sticky top-16 z-40">
+            <Navbar />
+          </div>
           <div className="content-page container p-8 min-h-screen ml-0 md:ml-64 mt-20">
             <Tabs aria-label="Tabs with underline" style="underline">
               <Tabs.Item active title="Profile" icon={HiUserCircle}>
