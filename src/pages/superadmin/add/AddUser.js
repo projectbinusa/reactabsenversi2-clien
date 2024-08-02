@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import Navbar from "../../../components/NavbarSuper";
+import NavbarSuper from "../../../components/NavbarSuper";
+import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function AddUser() {
   const [showPassword, setShowPassword] = useState(false);
@@ -68,7 +68,11 @@ function AddUser() {
   const GetAllShift = async () => {
     try {
       const response = await axios.get(
-        `${API_DUMMY}/api/shift/getall``http://localhost:2024/api/shift/getBySuper/${idSuperAdmin}`
+
+        `${API_DUMMY}/api/shift/getall`
+
+        `http://localhost:2024/api/shift/getBySuper/${idSuperAdmin}`
+
       );
       setShiftList(response.data);
     } catch (error) {
@@ -112,11 +116,11 @@ function AddUser() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <NavbarSuper />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-14 md:ml-64 mt-12">
           <div className="p-4">

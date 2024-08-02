@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../../components/NavbarSuper";
+import NavbarSuper from "../../../components/NavbarSuper";
+import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function DetailUser() {
   const { id } = useParams();
@@ -14,7 +14,9 @@ function DetailUser() {
 
   const getUserData = async () => {
     try {
-      const res = await axios.get(`${API_DUMMY}/api/user/getUserBy/${id}`);
+      const res = await axios.get(
+        `${API_DUMMY}/api/user/getUserBy/${id}`
+      );
       setUser(res.data);
     } catch (error) {
       console.log(error);
@@ -38,11 +40,11 @@ function DetailUser() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <NavbarSuper />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-14 md:ml-64 mt-12">
           <div className="p-4">

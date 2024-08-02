@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarAdmin";
+import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -10,7 +11,6 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import Lokasi from "../masterdata/Lokasi";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function EditLokasi() {
   const [namaLokasi, setNamaLokasi] = useState("");
@@ -30,7 +30,9 @@ function EditLokasi() {
 
   const getLokasi = async () => {
     try {
-      const res = await axios.get(`${API_DUMMY}/api/lokasi/GetById/${id}`);
+      const res = await axios.get(
+        `${API_DUMMY}/api/lokasi/GetById/${id}`
+      );
       setNamaLokasi(res.data.namaLokasi || "");
       setAlamat(res.data.alamat || "");
       setIdOrganisasi(res.data.idOrganisasi || null);
@@ -90,11 +92,11 @@ function EditLokasi() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className=" sm:ml-64 content-page container p-8  ml-14 md:ml-64 mt-12">
           <div className="p-4">
