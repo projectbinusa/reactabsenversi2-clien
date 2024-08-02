@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
+import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -9,7 +10,6 @@ import {
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function EditAdmin() {
   const [email, setEmail] = useState("");
@@ -68,11 +68,11 @@ function EditAdmin() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
       </div>
       <div className=" sm:ml-64 content-page p-8  ml-14 md:ml-64 mb-40">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import Navbar from "../../../components/NavbarAdmin";
+import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFileExport,
@@ -9,7 +10,7 @@ import {
 import Swal from "sweetalert2";
 import axios from "axios";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
+import NavbarAdmin from "../../../components/NavbarAdmin";
 
 function Perkaryawan() {
   const [listAbsensi, setListAbsensi] = useState([]);
@@ -115,11 +116,11 @@ function Perkaryawan() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <NavbarAdmin />
       </div>
-      <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+      <div className="flex h-full pt-5">
+        <div className="fixed h-full">
+          <Sidebar />
         </div>
         <div className="content-page flex-1 p-8 md:ml-64 mt-16 text-center overflow-auto">
           <div className="tabel-absen bg-white p-5 rounded-xl shadow-xl border border-gray-300">
