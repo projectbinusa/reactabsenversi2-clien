@@ -22,11 +22,11 @@ function Perkaryawan() {
   const getAllUserByAdmin = async () => {
     try {
       const usList = await axios.get(`${API_DUMMY}/api/user/${idAdmin}/users`);
-      const userOptions = usList.data.map((user) => ({
+      const userOptions = usList.data.slice().reverse().map((user) => ({
         value: user.id,
         label: user.username
           .split(" ")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .slice().reverse().map((word) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" "),
       }));
       setListUser(userOptions);
@@ -215,7 +215,7 @@ function Perkaryawan() {
                   </tr>
                 </thead>
                 <tbody>
-                  {listAbsensi.map((absensi, index) => (
+                  {listAbsensi.slice().reverse().map((absensi, index) => (
                     <tr key={absensi.id}>
                       <td className="px-6 py-3 whitespace-nowrap">
                         {index + 1}
