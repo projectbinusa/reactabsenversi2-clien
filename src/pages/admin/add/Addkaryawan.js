@@ -1,26 +1,39 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Navbar from "../../../components/NavbarAdmin";
+import Swal from "sweetalert2";
+import NavbarSuper from "../../../components/NavbarSuper";
 import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
-import Swal from "sweetalert2";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { API_DUMMY } from "../../../utils/api";
 
 function AddKaryawan() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
-  const [idOrganisasi, setIdOrganisasi] = useState("");
-  const [idJabatan, setIdJabatan] = useState("");
-  const [idShift, setIdShift] = useState("");
+  const [idOrganisasi, setIdOrganisasi] = useState(null);
+  const [idJabatan, setIdJabatan] = useState(null);
+  const [idShift, setIdShift] = useState(null);
   const [password, setPassword] = useState("");
-  const idAdmin = localStorage.getItem("adminId");
-  const adminId = localStorage.getItem("adminId");
+  const idSuperAdmin = localStorage.getItem("superadminId");
+  const [idAdmin, setIdAdmin] = useState(null);
   const [organisasiList, setOrganisasiList] = useState([]);
   const [jabatanList, setJabatanList] = useState([]);
   const [shiftList, setShiftList] = useState([]);
+  const [adminList, setAdminList] = useState([]);
+  const history = useHistory();
 
+  const getAllAdmin = async () => {
+    try {
+      const adm = await axios.get(
+        `${API_DUMMY}/api/admin/get-all-by-super/${idSuperAdmin}`
+      );
+      setAdminList(adm.data);
+    } catch (Error) {
+      console.log(Error);
+    }
+  };
   const handleShowPasswordChange = () => {
     setShowPassword(!showPassword);
   };
@@ -29,12 +42,13 @@ function AddKaryawan() {
     GetAllOrganisasi();
     GetAllJabatan();
     GetAllShift();
+    getAllAdmin();
   }, []);
 
   const GetAllOrganisasi = async () => {
     try {
       const response = await axios.get(
-        `${API_DUMMY}/api/organisasi/all-by-admin/${idAdmin}`
+        `${API_DUMMY}/api/organisasi/superadmin/${idSuperAdmin}`
       );
       setOrganisasiList(response.data);
     } catch (error) {
@@ -44,9 +58,7 @@ function AddKaryawan() {
 
   const GetAllJabatan = async () => {
     try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/jabatan/getByAdmin/${adminId}`
-      );
+      const response = await axios.get(`${API_DUMMY}/api/jabatan/all`);
       setJabatanList(response.data);
     } catch (error) {
       console.log(error);
@@ -56,7 +68,9 @@ function AddKaryawan() {
   const GetAllShift = async () => {
     try {
       const response = await axios.get(
-        `${API_DUMMY}/api/shift/getall-byadmin/${idAdmin}`
+
+        `${API_DUMMY}/api/shift/getBySuper/${idSuperAdmin}`
+
       );
       setShiftList(response.data);
     } catch (error) {
@@ -64,7 +78,7 @@ function AddKaryawan() {
     }
   };
 
-  const tambahKaryawan = async (e) => {
+  const tambahUser = async (e) => {
     e.preventDefault();
 
     try {
@@ -72,6 +86,7 @@ function AddKaryawan() {
         email: email,
         username: username,
         password: password,
+        idAdmin: idAdmin,
       };
       const response = await axios.post(
         `${API_DUMMY}/api/user/tambahkaryawan/${idAdmin}?idOrganisasi=${idOrganisasi}&idJabatan=${idJabatan}&idShift=${idShift}`,
@@ -79,22 +94,27 @@ function AddKaryawan() {
       );
       Swal.fire({
         title: "Berhasil",
-        text: "Berhasil menambahkan data",
+        text: "Berhasil menambahkan user",
         icon: "success",
+        timer: 2000,
         showConfirmButton: false,
       });
-      setTimeout(() => {
-        window.location.href = "/admin/karyawan";
-      }, 2000);
+      history.push("/superadmin/data-user");
     } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Gagal menambahkan user",
+        icon: "error",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       console.log(error);
-      Swal.fire("Error", "Gagal menambahkan data", "error");
     }
   };
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <Navbar />
+        <NavbarSuper />
       </div>
       <div className="flex h-full">
         <div className="fixed">
@@ -106,13 +126,13 @@ function AddKaryawan() {
               <div className="w-full p-4 text-center bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                 <div className="flex justify-between">
                   <h6 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
-                    Tambah Karyawan
+                    Tambah User
                   </h6>
                 </div>
 
                 <hr />
 
-                <form onSubmit={tambahKaryawan}>
+                <form onSubmit={tambahUser}>
                   <div className="mt-5 text-left">
                     <div className="grid md:grid-cols-2 md:gap-6">
                       <div className="relative z-0 w-full mb-6 group">
@@ -159,15 +179,41 @@ function AddKaryawan() {
                         htmlFor="id_organisasi"
                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                       >
-                        Organisasi
+                        Admin
                       </label>
                       <select
-                        value={idOrganisasi}
-                        onChange={(e) => setIdOrganisasi(e.target.value)}
+                        value={idAdmin || ""}
+                        onChange={(e) => setIdAdmin(Number(e.target.value))}
                         name="id_organisasi"
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                       >
-                        <option value="" disabled>
+                        <option value="" disabled selected>
+                          Pilih Admin
+                        </option>
+                        {adminList &&
+                          adminList.map((org) => (
+                            <option key={org.id} value={org.id}>
+                              {org.username}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                    <div className="relative z-0 w-full mb-6 group">
+                      <label
+                        htmlFor="id_organisasi"
+                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                      >
+                        Organisasi
+                      </label>
+                      <select
+                        value={idOrganisasi || ""}
+                        onChange={(e) =>
+                          setIdOrganisasi(Number(e.target.value))
+                        }
+                        name="id_organisasi"
+                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                      >
+                        <option value="" disabled selected>
                           Pilih Organisasi
                         </option>
                         {organisasiList &&
@@ -180,19 +226,19 @@ function AddKaryawan() {
                     </div>
                     <div className="relative z-0 w-full mb-6 group">
                       <label
-                        htmlFor="jabatan"
+                        htmlFor="id_organisasi"
                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                       >
                         Jabatan
                       </label>
                       <select
                         id="id_jabatan"
-                        value={idJabatan}
-                        onChange={(e) => setIdJabatan(e.target.value)}
+                        value={idJabatan || ""}
+                        onChange={(e) => setIdJabatan(Number(e.target.value))}
                         name="id_jabatan"
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                       >
-                        <option value="" disabled>
+                        <option value="" disabled selected>
                           Pilih Jabatan
                         </option>
                         {jabatanList.map((jab) => (
@@ -204,18 +250,18 @@ function AddKaryawan() {
                     </div>
                     <div className="relative z-0 w-full mb-6 group">
                       <label
-                        htmlFor="id_shift"
+                        htmlFor="id_organisasi"
                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                       >
                         Shift
                       </label>
                       <select
                         name="id_shift"
-                        value={idShift}
-                        onChange={(e) => setIdShift(e.target.value)}
+                        value={idShift || ""}
+                        onChange={(e) => setIdShift(Number(e.target.value))}
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                       >
-                        <option value="" disabled>
+                        <option value="" disabled selected>
                           Pilih Shift
                         </option>
                         {shiftList.map((sft) => (
@@ -273,7 +319,7 @@ function AddKaryawan() {
                   <div className="flex justify-between">
                     <a
                       className="focus:outline-none text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                      href="/admin/karyawan"
+                      href="/superadmin/data-user"
                     >
                       <FontAwesomeIcon icon={faArrowLeft} />
                     </a>
