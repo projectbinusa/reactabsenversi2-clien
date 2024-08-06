@@ -120,7 +120,7 @@ function AbsenMasuk() {
         } else {
           const formData = new FormData();
           formData.append("image", imageBlob);
-          formData.append("lokasiMasuk", `${latitude},${longitude}`);
+          formData.append("lokasiMasuk", `${address}`);
           formData.append("keteranganTerlambat", keteranganTerlambat || "-");
 
           const response = await axios.post(
