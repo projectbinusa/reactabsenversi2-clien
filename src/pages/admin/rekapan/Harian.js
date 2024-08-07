@@ -201,7 +201,7 @@ function Harian() {
                     </tr>
                   </thead>
                   <tbody>
-                    {absensiData.map((absensi, index) => (
+                    {absensiData.slice().reverse().map((absensi, index) => (
                       <tr key={index}>
                         <td className="px-5 py-3 whitespace-nowrap">
                           {index + 1}

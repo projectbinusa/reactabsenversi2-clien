@@ -193,7 +193,7 @@ function AddUser() {
                           Pilih Admin
                         </option>
                         {adminList &&
-                          adminList.map((org) => (
+                          adminList.slice().reverse().map((org) => (
                             <option key={org.id} value={org.id}>
                               {org.username}
                             </option>
@@ -219,7 +219,7 @@ function AddUser() {
                           Pilih Organisasi
                         </option>
                         {organisasiList &&
-                          organisasiList.map((org) => (
+                          organisasiList.slice().reverse().map((org) => (
                             <option key={org.id} value={org.id}>
                               {org.namaOrganisasi}
                             </option>
@@ -243,7 +243,7 @@ function AddUser() {
                         <option value="" disabled selected>
                           Pilih Jabatan
                         </option>
-                        {jabatanList.map((jab) => (
+                        {jabatanList.slice().reverse().map((jab) => (
                           <option key={jab.idJabatan} value={jab.idJabatan}>
                             {jab.namaJabatan}
                           </option>
@@ -266,7 +266,7 @@ function AddUser() {
                         <option value="" disabled selected>
                           Pilih Shift
                         </option>
-                        {shiftList.map((sft) => (
+                        {shiftList.slice().reverse().map((sft) => (
                           <option key={sft.id} value={sft.id}>
                             {sft.namaShift}
                           </option>

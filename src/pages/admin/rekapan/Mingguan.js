@@ -212,10 +212,10 @@ function Mingguan() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(absensi).map(
+                    {Object.entries(absensi).slice().reverse().map(
                       ([weekRange, absensiList], index) => (
                         <React.Fragment key={weekRange}>
-                          {absensiList.map((absensi, idx) => (
+                          {absensiList.slice().reverse().map((absensi, idx) => (
                             <tr
                               key={idx}
                               className="bg-white border-b dark:bg-gray-800"

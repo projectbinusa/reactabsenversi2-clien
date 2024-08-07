@@ -231,7 +231,7 @@ function Simpel() {
                 </thead>
                 <tbody className="text-left">
                   {absensiData.length > 0 && absensiData != null ? (
-                    absensiData.map((absensi, index) => (
+                    absensiData.slice().reverse().map((absensi, index) => (
                       <tr key={index}>
                         <td className="px-5 py-4 whitespace-nowrap">
                           {index + 1}
