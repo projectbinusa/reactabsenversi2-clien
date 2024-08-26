@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
+import Sidebar from "../../../components/SidebarUser";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function AddJabatanSA() {
   const [showPassword, setShowPassword] = useState(false);
@@ -56,11 +56,11 @@ function AddJabatanSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
       </div>
       <div className=" sm:ml-64 content-page p-8  ml-14 md:ml-64 mb-60">
@@ -78,7 +78,9 @@ function AddJabatanSA() {
 
               <div class="mt-5 text-left">
                 {/* <!-- Form Input --> */}
-                <form onSubmit={tambahJabatan}>
+                <form
+                  onSubmit={tambahJabatan}
+                >
                   <div class="grid md:grid-cols-2 md:gap-6">
                     {/* <!-- Nama Jabatan Input --> */}
                     <div class="relative z-0 w-full mb-6 group">
@@ -113,7 +115,7 @@ function AddJabatanSA() {
                       >
                         <option selected>Pilih Admin</option>
                         {adminList &&
-                          adminList.map((admin) => (
+                          adminList.slice().reverse().map((admin) => (
                             <option key={admin.id} value={admin.id}>
                               {admin.username}
                             </option>

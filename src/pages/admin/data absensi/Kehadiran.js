@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarAdmin";
+import Sidebar from "../../../components/SidebarUser";
 import axios from "axios";
 import { Pagination } from "flowbite-react";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function Kehadiran() {
   const [kehadiran, setKehadiran] = useState([]);
@@ -59,7 +59,7 @@ function Kehadiran() {
   };
 
   useEffect(() => {
-    const userAbsensiCounts = kehadiran.map((user) => ({
+    const userAbsensiCounts = kehadiran.slice().reverse().map((user) => ({
       userId: user.id,
       lateCount: getAbsensiByUserId(user.id, "Terlambat"),
       earlyCount: getAbsensiByUserId(user.id, "Lebih Awal"),
@@ -67,8 +67,9 @@ function Kehadiran() {
       totalMasuk: getTotalMasukPerBulan(user.id),
     }));
 
+
     setKehadiran((prevUsers) =>
-      prevUsers.map((user) => {
+      prevUsers.slice().reverse().map((user) => {
         const updatedCounts = userAbsensiCounts.find(
           (u) => u.userId === user.id
         );
@@ -121,11 +122,11 @@ function Kehadiran() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-0 md:ml-64 mt-12">
           <div className="p-4">
@@ -192,7 +193,7 @@ function Kehadiran() {
                       </tr>
                     </thead>
                     <tbody className="text-left">
-                      {paginatedKehadiran.map((kehadiran, index) => (
+                      {paginatedKehadiran.slice().reverse().map((kehadiran, index) => (
                         <tr
                           key={index}
                           className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"

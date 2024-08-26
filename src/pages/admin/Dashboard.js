@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Sidebar from "../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUsers,
@@ -9,7 +10,6 @@ import Navbar from "../../components/NavbarAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../utils/api";
-import SidebarNavbar from "../../components/SidebarNavbar";
 
 function Dashboard() {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -132,11 +132,11 @@ function Dashboard() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className="content-page container p-8 ml-0 md:ml-64 mt-12">
           <div className="mt-5 w-full">
@@ -225,7 +225,7 @@ function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {absenData.map((absen, index) => (
+                  {absenData.slice().reverse().map((absen, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -290,7 +290,7 @@ function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {cutiData.map((cuti, index) => (
+                  {cutiData.slice().reverse().map((cuti, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -341,7 +341,7 @@ function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {jabatanData.map((jabatan, index) => (
+                  {jabatanData.slice().reverse().map((jabatan, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -394,7 +394,7 @@ function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {lokasiData.map((lokasi, index) => (
+                  {lokasiData.slice().reverse().map((lokasi, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -446,7 +446,7 @@ function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {organisasiData.map((organisasi, index) => (
+                  {organisasiData.slice().reverse().map((organisasi, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"

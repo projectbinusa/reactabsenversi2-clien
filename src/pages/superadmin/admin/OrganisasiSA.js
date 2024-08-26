@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
+import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleInfo,
@@ -15,7 +16,6 @@ import Swal from "sweetalert2";
 import { API_DUMMY } from "../../../utils/api";
 
 import { Pagination } from "flowbite-react";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function OrganisasiSA() {
   const [userData, setUserData] = useState([]);
@@ -55,11 +55,14 @@ function OrganisasiSA() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`${API_DUMMY}/api/organisasi/delete/` + id, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          });
+          await axios.delete(
+            `${API_DUMMY}/api/organisasi/delete/` + id,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
 
           Swal.fire({
             icon: "success",
@@ -131,11 +134,11 @@ function OrganisasiSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
-      <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+      <div className="flex h-full pt-5">
+        <div className="fixed h-full">
+          <Sidebar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-0 md:ml-64 mt-4 overflow-auto">
           <div className="p-5 mt-10">
@@ -212,7 +215,7 @@ function OrganisasiSA() {
                   </thead>
                   {/* <!-- Tabel Body --> */}
                   <tbody className="text-left">
-                    {paginatedOrganisasi.map((admin, index) => (
+                    {paginatedOrganisasi.slice().reverse().map((admin, index) => (
                       <tr
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                         key={index}

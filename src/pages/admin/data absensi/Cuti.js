@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarAdmin";
+import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faPrint, faXmark } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Pagination } from "flowbite-react";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function Cuti() {
-  const [userData, setUserData] = useState([]);
+   const [userData, setUserData] = useState([]);
   const adminId = localStorage.getItem("adminId");
 
-  const [cuti, setCuti] = useState([]);
+   const [cuti, setCuti] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [limit, setLimit] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
@@ -220,11 +220,11 @@ function Cuti() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className="sm:ml-64 content-page container p-4 ml-0 md:ml-64 mt-5">
           <div className="p-5 mt-10 overflow-x-auto">
@@ -298,7 +298,7 @@ function Cuti() {
 
                   {/* <!-- Tabel Body --> */}
                   <tbody className="text-left">
-                    {paginatedCuti.map((cuti, index) => (
+                    {paginatedCuti.slice().reverse().map((cuti, index) => (
                       <tr
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                         key={index}

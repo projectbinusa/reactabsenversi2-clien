@@ -357,7 +357,7 @@ function Dashboard() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-200">
-                  {absensi.map((absenData, index) => (
+                  {absensi.slice().reverse().map((absenData, index) => (
                     <tr key={index}>
                       <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 text-center">
                         {index + 1}
@@ -399,7 +399,7 @@ function Dashboard() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-200">
-                  {cuti.map((item, index) => (
+                  {cuti.slice().reverse().map((item, index) => (
                     <tr key={index}>
                       <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 text-center">
                         {index + 1}

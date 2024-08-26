@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
+import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function AddShift() {
   const [waktuMasuk, setWaktuMasuk] = useState("");
@@ -71,11 +71,11 @@ function AddShift() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className=" sm:ml-64 content-page container p-8  ml-14 md:ml-64 mt-12">
           <div className="p-4">
@@ -166,11 +166,11 @@ function AddShift() {
                           name="id_admin"
                           className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
                         >
-                          <option value="" disabled>
+                          <option value="" disabled >
                             Pilih Admin
                           </option>
                           {adminList &&
-                            adminList.map((org) => (
+                            adminList.slice().reverse().map((org) => (
                               <option key={org.id} value={org.id}>
                                 {org.username}
                               </option>

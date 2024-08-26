@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/NavbarSuper";
+import Sidebar from "../../components/SidebarUser";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,7 +10,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../utils/api";
-import SidebarNavbar from "../../components/SidebarNavbar";
 // import jwt from 'jsonwebtoken';
 
 function DashboardSA() {
@@ -164,11 +164,11 @@ function DashboardSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className="content-page container p-8 ml-0 md:ml-64 mt-12">
           <div className="mt-5 w-full">
@@ -255,7 +255,7 @@ function DashboardSA() {
                 </thead>
                 {/* <!-- Tabel Body --> */}
                 <tbody className="text-left">
-                  {admin.map((admin, index) => (
+                  {admin.slice().reverse().map((admin, index) => (
                     <tr
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                       key={index}
@@ -321,7 +321,7 @@ function DashboardSA() {
                 </thead>
                 {/* <!-- Tabel Body --> */}
                 <tbody className="text-left">
-                  {organisasiData.map((admin, index) => (
+                  {organisasiData.slice().reverse().map((admin, index) => (
                     <tr
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                       key={index}

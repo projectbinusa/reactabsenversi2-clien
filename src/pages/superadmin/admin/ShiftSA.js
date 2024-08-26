@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../../components/NavbarSuper";
+import NavbarSuper from "../../../components/NavbarSuper";
+import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfo,
@@ -13,7 +14,7 @@ import Swal from "sweetalert2";
 import { API_DUMMY } from "../../../utils/api";
 
 import { Pagination } from "flowbite-react";
-import SidebarNavbar from "../../../components/SidebarNavbar";
+
 
 function ShiftSA() {
   const [userData, setUserData] = useState([]);
@@ -122,11 +123,11 @@ function ShiftSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <NavbarSuper />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className=" sm:ml-64 content-page container p-8  ml-0 md:ml-64 mt-12">
           <div className="p-5 mt-10">
@@ -200,7 +201,7 @@ function ShiftSA() {
                   </thead>
                   {/* <!-- Tabel Body --> */}
                   <tbody className="text-left">
-                    {paginatedShift.map((shift, index) => (
+                    {paginatedShift.slice().reverse().map((shift, index) => (
                       <tr
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                         key={index}

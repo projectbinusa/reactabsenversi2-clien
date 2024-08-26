@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarAdmin";
+import Sidebar from "../../../components/SidebarUser";
 import {
   faInfo,
   faPenToSquare,
@@ -11,7 +12,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Pagination } from "flowbite-react";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function Lokasi() {
   const [userData, setUserData] = useState([]);
@@ -24,7 +24,9 @@ function Lokasi() {
 
   const getallUser = async () => {
     try {
-      const res = await axios.get(`${API_DUMMY}/api/user/${idAdmin}/users`);
+      const res = await axios.get(
+        `${API_DUMMY}/api/user/${idAdmin}/users`
+      );
       setKaryawan(res.data.length);
     } catch (error) {}
   };
@@ -125,11 +127,11 @@ function Lokasi() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className=" sm:ml-64 content-page container p-8  ml-0 md:ml-64 mt-5">
           <div className="p-5 mt-10">
@@ -203,7 +205,7 @@ function Lokasi() {
                   </thead>
                   {/* <!-- Tabel Body --> */}
                   <tbody className="text-left">
-                    {paginatedLokasi.map((lokasi, index) => (
+                    {paginatedLokasi.slice().reverse().map((lokasi, index) => (
                       <tr
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                         key={index}

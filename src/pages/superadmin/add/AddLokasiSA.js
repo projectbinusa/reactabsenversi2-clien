@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
+import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../../utils/api";
-import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function AddLokasiSA() {
   const [namaLokasi, setNamaLokasi] = useState("");
@@ -50,11 +50,11 @@ function AddLokasiSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <SidebarNavbar />
+        <Navbar />
       </div>
       <div className="flex h-full">
-        <div className="sticky top-16 z-40">
-          <Navbar />
+        <div className="fixed">
+          <Sidebar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-14 md:ml-64 mt-12">
           <div className="p-4">
@@ -123,7 +123,7 @@ function AddLokasiSA() {
                           <option value="" disabled>
                             Pilih Organisasi
                           </option>
-                          {organisasiList.map((org) => (
+                          {organisasiList.slice().reverse().map((org) => (
                             <option key={org.id} value={org.id}>
                               {org.namaOrganisasi}
                             </option>
