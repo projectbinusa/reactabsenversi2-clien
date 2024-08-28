@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../utils/api";
+import SidebarNavbar from "../../components/SidebarNavbar";
 // import jwt from 'jsonwebtoken';
 
 function DashboardSA() {
@@ -164,16 +165,16 @@ function DashboardSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <Navbar />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
-        <div className="content-page container p-8 ml-0 md:ml-64 mt-12">
+        <div className="content-page container p-8 ml-0 md:ml-64 mt-12 overflow-x-hidden">
           <div className="mt-5 w-full">
             <div className="p-4 text-center bg-indigo-300 border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-              <h2 className="text-2xl font-semibold mb-4">
+              <h2 className="text-2xl font-semibold mb-4 capitalize">
                 Selamat Datang di Absensi
                 <span> @{username}</span>
               </h2>
@@ -242,42 +243,52 @@ function DashboardSA() {
                 {/* <!-- Tabel Head --> */}
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       No
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Email
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Username
                     </th>
                   </tr>
                 </thead>
                 {/* <!-- Tabel Body --> */}
                 <tbody className="text-left">
-                  {admin.slice().reverse().map((admin, index) => (
-                    <tr
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                      key={index}
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  {admin.length > 0 ? (
+                    admin.map((admin, index) => (
+                      <tr
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                        key={index}
                       >
-                        {index + 1}
-                      </th>
-                      <td className="px-6 py-4">
-                        <a
-                          href="/cdn-cgi/l/email-protection"
-                          className="__cf_email__"
-                          data-cfemail="5a363b23363b1a3d373b333674393537"
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
-                          {admin.email}
-                        </a>
+                          {index + 1}
+                        </th>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <a
+                            href="/cdn-cgi/l/email-protection"
+                            className="__cf_email__"
+                            data-cfemail="5a363b23363b1a3d373b333674393537"
+                          >
+                            {admin.email}
+                          </a>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {admin.username}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="3" className="text-center py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
-                      <td className="px-6 py-4 capitalize">{admin.username}</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -299,50 +310,64 @@ function DashboardSA() {
                 {/* <!-- Tabel Head --> */}
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       No
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Admin
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Nama
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Alamat
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Telepon
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Email
                     </th>
                   </tr>
                 </thead>
                 {/* <!-- Tabel Body --> */}
                 <tbody className="text-left">
-                  {organisasiData.slice().reverse().map((admin, index) => (
-                    <tr
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                      key={index}
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  {organisasiData.length > 0 ? (
+                    organisasiData.map((admin, index) => (
+                      <tr
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                        key={index}
                       >
-                        {index + 1}
-                      </th>
-                      <td className="px-6 py-4 capitalize">
-                        {admin.admin.username}
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {index + 1}
+                        </th>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {admin.admin.username}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {admin.namaOrganisasi}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {admin.alamat}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {admin.nomerTelepon}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {admin.emailOrganisasi}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="text-center py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
-                      <td className="px-6 py-4 capitalize">
-                        {admin.namaOrganisasi}
-                      </td>
-                      <td className="px-6 py-4 capitalize">{admin.alamat}</td>
-                      <td className="px-6 py-4">{admin.nomerTelepon}</td>
-                      <td className="px-6 py-4">{admin.emailOrganisasi}</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

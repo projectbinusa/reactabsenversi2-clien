@@ -10,6 +10,7 @@ import Navbar from "../../components/NavbarAdmin";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../utils/api";
+import SidebarNavbar from "../../components/SidebarNavbar";
 
 function Dashboard() {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -28,7 +29,7 @@ function Dashboard() {
     try {
       const res = await axios.get(`${API_DUMMY}/api/user/${idAdmin}/users`);
       setKaryawan(res.data.length);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
@@ -132,13 +133,13 @@ function Dashboard() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <Navbar />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
-        <div className="content-page container p-8 ml-0 md:ml-64 mt-12">
+        <div className="content-page container p-8 ml-0 md:ml-64 mt-10">
           <div className="mt-5 w-full">
             <div className="p-4 text-center bg-indigo-300 border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
               <h2 className="text-2xl font-semibold mb-4 capitalize">
@@ -204,56 +205,65 @@ function Dashboard() {
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-center text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       No
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Username
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Tanggal
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Jam Masuk
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Jam Pulang
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Kehadiran
                     </th>
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {absenData.slice().reverse().map((absen, index) => (
-                    <tr
-                      key={index}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        {index + 1}
-                      </th>
-                      <td className="px-6 py-4 capitalize">
-                        {absen.user.username}
-                      </td>
-                      <td className="px-6 py-4 capitalize">
-                        {formatDate(absen.tanggalAbsen)}
-                      </td>
-                      <td className="px-6 py-4 capitalize">
-                        {absen.jamMasuk || "-"}
-                      </td>
-                      <td className="px-6 py-4 capitalize">
-                        {absen.jamPulang || "-"}
-                      </td>
-                      <td className="px-6 py-4 capitalize">
-                        {absen.statusAbsen}
+                  {absenData.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    absenData.slice().reverse().map((absen, index) => (
+                      <tr
+                        key={index}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      >
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
+                        >
+                          {index + 1}
+                        </th>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {absen.user.username}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {formatDate(absen.tanggalAbsen)}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {absen.jamMasuk || "-"}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {absen.jamPulang || "-"}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {absen.statusAbsen}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
+
               </table>
             </div>
           </div>
@@ -272,48 +282,59 @@ function Dashboard() {
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-center text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       No
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Username
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Awal Cuti
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Akhir Cuti
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Status
                     </th>
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {cutiData.slice().reverse().map((cuti, index) => (
-                    <tr
-                      key={index}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        {index + 1}
-                      </th>
-                      <td className="px-6 py-4 capitalize">
-                        {cuti.user.username}
+                  {cutiData.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="px-6 py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
-                      <td className="px-6 py-4 capitalize">
-                        {formatDate(cuti.awalCuti)}
-                      </td>
-                      <td className="px-6 py-4 capitalize">
-                        {formatDate(cuti.akhirCuti)}
-                      </td>
-                      <td className="px-6 py-4 capitalize">{cuti.status}</td>
                     </tr>
-                  ))}
+                  ) : (
+                    cutiData.slice().reverse().map((cuti, index) => (
+                      <tr
+                        key={index}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      >
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {index + 1}
+                        </th>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {cuti.user.username}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {formatDate(cuti.awalCuti)}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {formatDate(cuti.akhirCuti)}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {cuti.status}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
+
               </table>
             </div>
           </div>
@@ -332,32 +353,41 @@ function Dashboard() {
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-center text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       No
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Jabatan
                     </th>
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {jabatanData.slice().reverse().map((jabatan, index) => (
-                    <tr
-                      key={index}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        {index + 1}
-                      </th>
-                      <td className="px-6 py-4 capitalize">
-                        {jabatan.namaJabatan}
+                  {jabatanData.length === 0 ? (
+                    <tr>
+                      <td colSpan="2" className="px-6 py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    jabatanData.slice().reverse().map((jabatan, index) => (
+                      <tr
+                        key={index}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      >
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {index + 1}
+                        </th>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {jabatan.namaJabatan}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
+
               </table>
             </div>
           </div>
@@ -376,46 +406,59 @@ function Dashboard() {
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-center text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       No
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Nama Lokasi
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Alamat
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Jumlah Karyawan
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Organisasi
                     </th>
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {lokasiData.slice().reverse().map((lokasi, index) => (
-                    <tr
-                      key={index}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        {index + 1}
-                      </th>
-                      <td className="px-6 py-4 capitalize">
-                        {lokasi.namaLokasi}
-                      </td>
-                      <td className="px-6 py-4 capitalize">{lokasi.alamat}</td>
-                      <td className="px-6 py-4 capitalize">{karyawan}</td>
-                      <td className="px-6 py-4 capitalize">
-                        {lokasi.organisasi.namaOrganisasi}
+                  {lokasiData.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="px-6 py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    lokasiData.slice().reverse().map((lokasi, index) => (
+                      <tr
+                        key={index}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      >
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {index + 1}
+                        </th>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {lokasi.namaLokasi}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {lokasi.alamat}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {karyawan}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {lokasi.organisasi.namaOrganisasi}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
+
               </table>
             </div>
           </div>
@@ -434,38 +477,47 @@ function Dashboard() {
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-center text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       No
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Nama Organisasi
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Alamat
                     </th>
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {organisasiData.slice().reverse().map((organisasi, index) => (
-                    <tr
-                      key={index}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        {index + 1}
-                      </th>
-                      <td className="px-6 py-4 capitalize">
-                        {organisasi.namaOrganisasi}
-                      </td>
-                      <td className="px-6 py-4 capitalize">
-                        {organisasi.alamat}
+                  {organisasiData.length === 0 ? (
+                    <tr>
+                      <td colSpan="3" className="px-6 py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    organisasiData.slice().reverse().map((organisasi, index) => (
+                      <tr
+                        key={index}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      >
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {index + 1}
+                        </th>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {organisasi.namaOrganisasi}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {organisasi.alamat}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
+
               </table>
             </div>
           </div>

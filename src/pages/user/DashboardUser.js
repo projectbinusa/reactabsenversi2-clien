@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Sidebar from "../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -208,33 +209,29 @@ function Dashboard() {
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 mt-7">
               <Link to={isAbsenMasuk ? "#" : "/user/absen"}>
                 <div
-                  className={`pl-2 h-24 rounded-lg shadow-md md:w-auto ${
-                    isAbsenMasuk
-                      ? "bg-gray-500 cursor-not-allowed"
-                      : "bg-blue-500"
-                  }`}
+                  className={`pl-2 h-24 rounded-lg shadow-md md:w-auto ${isAbsenMasuk
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : "bg-blue-500"
+                    }`}
                 >
                   <div className="flex w-full h-full py-2 px-4 bg-white rounded-lg justify-between">
                     <div className="my-auto">
                       <p
-                        className={`font-bold ${
-                          isAbsenMasuk ? "text-gray-400" : "text-black"
-                        }`}
+                        className={`font-bold ${isAbsenMasuk ? "text-gray-400" : "text-black"
+                          }`}
                       >
                         Masuk
                       </p>
                       <p
-                        className={`text-lg ${
-                          isAbsenMasuk ? "text-gray-400" : "text-black"
-                        }`}
+                        className={`text-lg ${isAbsenMasuk ? "text-gray-400" : "text-black"
+                          }`}
                       >
                         Absen masuk.
                       </p>
                     </div>
                     <div
-                      className={`my-auto ${
-                        isAbsenMasuk ? "text-gray-400" : "text-black"
-                      }`}
+                      className={`my-auto ${isAbsenMasuk ? "text-gray-400" : "text-black"
+                        }`}
                     >
                       <FontAwesomeIcon
                         icon={faArrowRightFromBracket}
@@ -357,19 +354,27 @@ function Dashboard() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-200">
-                  {absensi.slice().reverse().map((absenData, index) => (
-                    <tr key={index}>
-                      <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 text-center">
-                        {index + 1}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-2 text-gray-700 text-center capitalize">
-                        {formatDate(absenData.tanggalAbsen)}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-2 text-gray-700 text-center capitalize">
-                        {absenData.statusAbsen}
+                  {absensi.length > 0 ? (
+                    absensi.map((absenData, index) => (
+                      <tr key={index}>
+                        <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 text-center">
+                          {index + 1}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 text-center capitalize">
+                          {formatDate(absenData.tanggalAbsen)}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 text-center capitalize">
+                          {absenData.statusAbsen}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="3" className="text-center py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -399,16 +404,24 @@ function Dashboard() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-200">
-                  {cuti.slice().reverse().map((item, index) => (
-                    <tr key={index}>
-                      <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 text-center">
-                        {index + 1}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-2 text-gray-700 text-center capitalize">
-                        {item.keperluan}
+                  {cuti.length > 0 ? (
+                    cuti.map((item, index) => (
+                      <tr key={index}>
+                        <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 text-center">
+                          {index + 1}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 text-center capitalize">
+                          {item.keperluan}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="2" className="text-center py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
