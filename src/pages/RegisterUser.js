@@ -99,7 +99,18 @@ function RegisterUser() {
       }, 1500);
     } catch (error) {
       console.error("Error during registration:", error);
-      Swal.fire("Error", "Gagal mendaftar silahkan coba lagi", "error");
+
+      if (error.response && error.response.data && error.response.data.message) {
+        if (error.response.data.message.includes("Email sudah digunakan")) {
+          Swal.fire("Error", "Email telah dipakai", "error");
+        } else if (error.response.data.message.includes("Username sudah digunakan")) {
+          Swal.fire("Error", "Username telah dipakai", "error");
+        } else {
+          Swal.fire("Error", "Gagal mendaftar silahkan coba lagi", "error");
+        }
+      } else {
+        Swal.fire("Error", "Gagal mendaftar silahkan coba lagi", "error");
+      }
     }
   };
 
@@ -140,7 +151,7 @@ function RegisterUser() {
                     <option value="" disabled>
                       Pilih Organisasi
                     </option>
-                    {organisasiList.slice().reverse().map((org) => (
+                    {organisasiList.map((org) => (
                       <option key={org.id} value={org.id}>
                         {org.namaOrganisasi}
                       </option>
@@ -160,7 +171,7 @@ function RegisterUser() {
                       <option value="" disabled>
                         Pilih Shift
                       </option>
-                      {shiftList.slice().reverse().map((shift) => (
+                      {shiftList.map((shift) => (
                         <option key={shift.id} value={shift.id}>
                           {shift.namaShift}
                         </option>

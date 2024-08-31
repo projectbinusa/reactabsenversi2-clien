@@ -1,12 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import NavbarSuper from "../../../components/NavbarSuper";
+import Navbar from "../../../components/NavbarSuper";
 import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { API_DUMMY } from "../../../utils/api";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function AddUser() {
   const [showPassword, setShowPassword] = useState(false);
@@ -68,11 +69,7 @@ function AddUser() {
   const GetAllShift = async () => {
     try {
       const response = await axios.get(
-
-        `${API_DUMMY}/api/shift/getall`
-
-        `http://localhost:2024/api/shift/getBySuper/${idSuperAdmin}`
-
+        `${API_DUMMY}/api/shift/getBySuper/${idSuperAdmin}`
       );
       setShiftList(response.data);
     } catch (error) {
@@ -83,14 +80,34 @@ function AddUser() {
   const tambahUser = async (e) => {
     e.preventDefault();
 
+   
+    const trimmedEmail = email.trim();
+    const trimmedUsername = username.trim();
+
     try {
+      // Fetch data semua pengguna
+      const response = await axios.get(`${API_DUMMY}/api/user/get-allUser`);
+      const existingUsers = response.data;
+
+      const isEmailExists = existingUsers.some(
+        (user) => user.email.toLowerCase() === trimmedEmail.toLowerCase()
+      );
+      const isUsernameExists = existingUsers.some(
+        (user) => user.username.toLowerCase() === trimmedUsername.toLowerCase()
+      );
+
+      if (isEmailExists || isUsernameExists) {
+        Swal.fire("Error", "Email atau Username sudah terdaftar", "error");
+        return;
+      }
+
       const newUser = {
-        email: email,
-        username: username,
+        email: trimmedEmail,
+        username: trimmedUsername,
         password: password,
-        idAdmin: idAdmin,
       };
-      const response = await axios.post(
+
+      await axios.post(
         `${API_DUMMY}/api/user/tambahkaryawan/${idAdmin}?idOrganisasi=${idOrganisasi}&idJabatan=${idJabatan}&idShift=${idShift}`,
         newUser
       );
@@ -116,11 +133,11 @@ function AddUser() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <NavbarSuper />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-14 md:ml-64 mt-12">
           <div className="p-4">
@@ -193,7 +210,7 @@ function AddUser() {
                           Pilih Admin
                         </option>
                         {adminList &&
-                          adminList.slice().reverse().map((org) => (
+                          adminList.map((org) => (
                             <option key={org.id} value={org.id}>
                               {org.username}
                             </option>
@@ -219,7 +236,7 @@ function AddUser() {
                           Pilih Organisasi
                         </option>
                         {organisasiList &&
-                          organisasiList.slice().reverse().map((org) => (
+                          organisasiList.map((org) => (
                             <option key={org.id} value={org.id}>
                               {org.namaOrganisasi}
                             </option>
@@ -243,7 +260,7 @@ function AddUser() {
                         <option value="" disabled selected>
                           Pilih Jabatan
                         </option>
-                        {jabatanList.slice().reverse().map((jab) => (
+                        {jabatanList.map((jab) => (
                           <option key={jab.idJabatan} value={jab.idJabatan}>
                             {jab.namaJabatan}
                           </option>
@@ -266,7 +283,7 @@ function AddUser() {
                         <option value="" disabled selected>
                           Pilih Shift
                         </option>
-                        {shiftList.slice().reverse().map((sft) => (
+                        {shiftList.map((sft) => (
                           <option key={sft.id} value={sft.id}>
                             {sft.namaShift}
                           </option>
