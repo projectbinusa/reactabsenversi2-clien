@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { API_DUMMY } from "../../../utils/api";
 import NavbarAdmin from "../../../components/NavbarAdmin";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function Perkaryawan() {
   const [listAbsensi, setListAbsensi] = useState([]);
@@ -22,11 +23,11 @@ function Perkaryawan() {
   const getAllUserByAdmin = async () => {
     try {
       const usList = await axios.get(`${API_DUMMY}/api/user/${idAdmin}/users`);
-      const userOptions = usList.data.slice().reverse().map((user) => ({
+      const userOptions = usList.data.map((user) => ({
         value: user.id,
         label: user.username
           .split(" ")
-          .slice().reverse().map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" "),
       }));
       setListUser(userOptions);
@@ -35,29 +36,44 @@ function Perkaryawan() {
     }
   };
 
-  // Fetch absensi data by user id
   const getAbsensiByUserId = async (userId) => {
     try {
       const abs = await axios.get(
         `${API_DUMMY}/api/absensi/getByUserId/${userId}`
       );
-      if (abs.data.length === 0) {
-        Swal.fire("Gagal", "User belum pernah absensi", "error");
-        setListAbsensi([]);
+
+      if (abs.status === 200) {
+        if (abs.data.length === 0) {
+          return []; // Return an empty array if no attendance records are found
+        } else {
+          return abs.data; // Return the attendance data
+        }
       } else {
-        setListAbsensi(abs.data);
+        Swal.fire("Gagal", "Gagal Mengambil data", "error");
+        return [];
       }
     } catch (error) {
-      console.log(error);
-      Swal.fire("Gagal", "Gagal Mengambil data ", "error");
+      console.log("Error:", error);
+      Swal.fire("Gagal", "Gagal Mengambil data", "error");
+      return [];
     }
   };
 
   // Handle user selection
-  const handleUserChange = (selectedOption) => {
+  const handleUserChange = async (selectedOption) => {
     setSelectedUser(selectedOption);
+
     if (selectedOption) {
-      getAbsensiByUserId(selectedOption.value);
+      const userId = selectedOption.value;
+      const abs = await getAbsensiByUserId(userId);
+
+      if (abs.length === 0) {
+        Swal.fire("Informasi", "User belum pernah absensi", "info");
+        setSelectedUser(null); // Clear the selected user
+        setListAbsensi([]); // Clear the attendance list
+      } else {
+        setListAbsensi(abs);
+      }
     } else {
       setListAbsensi([]);
     }
@@ -113,14 +129,52 @@ function Perkaryawan() {
     return new Date(dateString).toLocaleDateString("id-ID", options);
   };
 
+  const formatLamaKerja = (startKerja) => {
+    const startDate = new Date(startKerja);
+    const currentDate = new Date();
+
+    const diffYears = currentDate.getFullYear() - startDate.getFullYear();
+
+    let diffMonths = currentDate.getMonth() - startDate.getMonth();
+    if (diffMonths < 0) {
+      diffMonths += 12;
+    }
+
+    let diffDays = Math.floor(
+      (currentDate - startDate) / (1000 * 60 * 60 * 24)
+    );
+
+    const lastDayOfLastMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      0
+    ).getDate();
+    if (currentDate.getDate() < startDate.getDate()) {
+      diffMonths -= 1;
+      diffDays -= lastDayOfLastMonth;
+    }
+
+    let durationString = "";
+    if (diffYears > 0) {
+      durationString += `${diffYears} tahun `;
+    }
+    if (diffMonths > 0) {
+      durationString += `${diffMonths} bulan `;
+    }
+    if (diffDays > 0) {
+      durationString += `${diffDays} hari`;
+    }
+
+    return durationString.trim();
+  };
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <NavbarAdmin />
+        <SidebarNavbar />
       </div>
-      <div className="flex h-full pt-5">
-        <div className="fixed h-full">
-          <Sidebar />
+      <div className="flex h-full">
+        <div className="sticky top-16 z-40">
+          <NavbarAdmin />
         </div>
         <div className="content-page flex-1 p-8 md:ml-64 mt-16 text-center overflow-auto">
           <div className="tabel-absen bg-white p-5 rounded-xl shadow-xl border border-gray-300">
@@ -173,11 +227,13 @@ function Perkaryawan() {
                   <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </button>
                 <button
+                  type="button"
                   className="exp bg-green-500 hover:bg-green text-white font-bold py-2 px-4 rounded inline-block ml-auto"
                   onClick={exportPerkaryawan}
                 >
                   <FontAwesomeIcon icon={faFileExport} />
                 </button>
+
               </div>
             </form>
 
@@ -220,29 +276,37 @@ function Perkaryawan() {
                       <td className="px-6 py-3 whitespace-nowrap">
                         {index + 1}
                       </td>
-                      <td className="px-6 py-3 whitespace-nowrap capitalize">
+                      <td className="px-6 py-3 whitespace-nowrap capitalize text-center">
                         {absensi.user.username}
                       </td>
-                      <td className="px-6 py-3 whitespace-nowrap capitalize">
+                      <td className="px-6 py-3 whitespace-nowrap capitalize text-center">
                         {formatDate(absensi.tanggalAbsen)}
                       </td>
-                      <td className="px-6 py-3 whitespace-nowrap capitalize">
+                      <td className="px-6 py-3 whitespace-nowrap capitalize text-center">
                         {absensi.jamMasuk}
                       </td>
-                      <td className="px-6 py-3 whitespace-nowrap capitalize">
-                        <img src={absensi.fotoMasuk} alt="Foto Masuk" />
+                      <td className="px-6 py-3 whitespace-nowrap capitalize text-center">
+                        <img
+                          src={absensi.fotoMasuk}
+                          className="block py-2.5 px-0 w-25 max-h-32 h-25 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                          alt="Foto Masuk"
+                        />
                       </td>
-                      <td className="px-6 py-3 whitespace-nowrap capitalize">
+                      <td className="px-6 py-3 whitespace-nowrap capitalize text-center">
                         {absensi.jamPulang}
                       </td>
-                      <td className="px-6 py-3 whitespace-nowrap capitalize">
-                        <img src={absensi.fotoPulang} alt="Foto Pulang" />
+                      <td className="px-6 py-3 whitespace-nowrap capitalize text-center">
+                        <img
+                          src={absensi.fotoPulang}
+                          className="block py-2.5 px-0 w-25 max-h-32 h-25 text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                          alt="Foto Pulang"
+                        />
                       </td>
-                      <td className="px-6 py-3 whitespace-nowrap capitalize">
-                        {absensi.jamKerja}
+                      <td className="px-6 py-3 whitespace-nowrap capitalize text-center">
+                        {formatLamaKerja(absensi.user.startKerja)}
                       </td>
-                      <td className="px-6 py-3 whitespace-nowrap capitalize">
-                        {absensi.keterangan}
+                      <td className="px-6 py-3 whitespace-nowrap capitalize text-center">
+                        {absensi.statusAbsen}
                       </td>
                     </tr>
                   ))}
