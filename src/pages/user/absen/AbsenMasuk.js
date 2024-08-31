@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import Loader from "../../../components/Loader";
 import { API_DUMMY } from "../../../utils/api";
 import SidebarNavbar from "../../../components/SidebarNavbar";
+import "../css/AbsenMasuk.css"
 
 function AbsenMasuk() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -191,8 +192,11 @@ function AbsenMasuk() {
               {error && <div className="text-red-500">{error}</div>}
               <form onSubmit={(e) => e.preventDefault()}>
                 <p className="font-bold text-center mt-8">Foto:</p>
-                <div className="flex justify-center">
-                  <Webcam audio={false} ref={webcamRef} />
+                <div className="flex justify-center webcam-container">
+                  <Webcam 
+                    audio={false} 
+                    ref={webcamRef} 
+                  />
                 </div>
                 <div className="flex justify-center mt-6">
                   {fetchingLocation ? (
