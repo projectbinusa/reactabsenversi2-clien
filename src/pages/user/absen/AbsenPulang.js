@@ -28,6 +28,14 @@ function AbsenPulang() {
     east: 110.30157620693905, // Pojok Satpam
   };
 
+    // koordinat excelent
+  // const allowedCoordinates = {
+  //   northWest: { lat: -6.982580885, lon: 110.404028235 },
+  //   northEast: { lat: -6.982580885, lon: 110.404118565 },
+  //   southWest: { lat: -6.982670715, lon: 110.404028235 },
+  //   southEast: { lat: -6.982670715, lon: 110.404118565 },
+  // };
+
   const isWithinAllowedCoordinates = (latitude, longitude) => {
     return (
       latitude <= allowedCoordinates.north &&
