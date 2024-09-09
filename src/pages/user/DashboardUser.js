@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faArrowRightFromBracket,
-  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faCalendarDays,
@@ -19,12 +17,11 @@ import { API_DUMMY } from "../../utils/api";
 import SidebarNavbar from "../../components/SidebarNavbar";
 
 function Dashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [username, setUsername] = useState({});
   const [absensi, setAbsensi] = useState([]);
   const [cuti, setCuti] = useState([]);
-  const [izin, setIzin] = useState([]);
+  const [ setIzin] = useState([]);
   const [totalIzin, setTotalIzin] = useState(0);
   const [isAbsenMasuk, setIsAbsenMasuk] = useState(false);
 
@@ -138,7 +135,7 @@ function Dashboard() {
     cekAbsensi();
 
     return () => clearInterval(interval);
-  }, []);
+  });
 
   useEffect(() => {
     setUsername(username); // Setelah mendapatkan respons, atur username
@@ -163,9 +160,7 @@ function Dashboard() {
     ":" +
     addLeadingZero(currentDateTime.getSeconds());
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+ 
 
   // Function to format date in Indonesian
   const formatDate = (dateString) => {

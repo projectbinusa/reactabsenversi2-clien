@@ -3,18 +3,15 @@ import Navbar from "../../../components/NavbarUser";
 import Webcam from "react-webcam";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { toBeDisabled } from "@testing-library/jest-dom/matchers";
 import { API_DUMMY } from "../../../utils/api";
 import SidebarNavbar from "../../../components/SidebarNavbar";
 import "../css/AbsenMasuk.css"
 
 function AbsenPulang() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const webcamRef = useRef(null);
-  const [error, setError] = useState("");
+  const [setError] = useState("");
   const userId = localStorage.getItem("userId");
-  const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState("");
   const [fetchingLocation, setFetchingLocation] = useState(true);
   const [keteranganPulangAwal, setKeteranganPulangAwal] = useState("");
@@ -70,7 +67,7 @@ function AbsenPulang() {
     }, 1000); // Perbarui setiap detik
 
     return () => clearInterval(interval);
-  }, []);
+  });
 
   useEffect(() => {
     if (!fetchingLocation) {
@@ -102,7 +99,7 @@ function AbsenPulang() {
         setFetchingLocation(false);
       }
     );
-  }, [fetchingLocation]);
+  });
 
   // Fungsi untuk menambahkan nol di depan angka jika angka kurang dari 10
   const tambahkanNolDepan = (num) => {
@@ -124,9 +121,6 @@ function AbsenPulang() {
     ucapan = "Selamat Malam";
   }
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
 
   const handleCaptureAndSubmitPulang = async () => {
     const imageSrc = webcamRef.current.getScreenshot();
