@@ -7,8 +7,7 @@ import { API_DUMMY } from "../../utils/api";
 import SidebarNavbar from "../../components/SidebarNavbar";
 
 function IzinAbsen() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [keteranganPulangAwal, setKeteranganPulangAwal] = useState("");
   const userId = localStorage.getItem("userId");
 
@@ -40,9 +39,7 @@ function IzinAbsen() {
     ucapan = "Selamat Malam";
   }
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,7 +47,7 @@ function IzinAbsen() {
       keteranganPulangAwal: keteranganPulangAwal,
     };
     try {
-      const response = await axios.put(
+       await axios.put(
         `${API_DUMMY}/api/absensi/izin-tengah-hari/${userId}`,
         izin
       );

@@ -6,12 +6,10 @@ import { API_DUMMY } from "../../../utils/api";
 import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function AddLembur() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [jam_mulai, setJamMulai] = useState("");
   const [jam_selesai, setJamSelesai] = useState("");
   const [keterangan_lembur, setKeteranganLembur] = useState("");
   const [tanggal_lembur, setTanggalLembur] = useState("");
-  const [nama, setNama] = useState("");
 
   const addLembur = async (e) => {
     e.preventDefault();
@@ -20,7 +18,6 @@ function AddLembur() {
       jamMulai: jam_mulai,
       jamSelesai: jam_selesai,
       keteranganLembur: keterangan_lembur,
-      nama: nama,
       tanggalLembur: tanggal_lembur,
     };
 
@@ -60,10 +57,6 @@ function AddLembur() {
         timer: 1500,
       });
     }
-  };
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
   };
 
   const handleBack = () => {

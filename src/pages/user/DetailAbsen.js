@@ -67,7 +67,7 @@ function DetailAbsen() {
 
   useEffect(() => {
     getAbsensi();
-  }, []);
+  });
 
   const formatDate = (dateString) => {
     const options = {

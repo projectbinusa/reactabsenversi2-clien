@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import Sidebar from "../../../components/SidebarUser";
 import Navbar from "../../../components/NavbarUser";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import Swal from "sweetalert2";
@@ -15,11 +14,8 @@ function TabelCuti() {
   const [limit, setLimit] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+ 
 
   const formatDate = (dateString) => {
     const options = {
