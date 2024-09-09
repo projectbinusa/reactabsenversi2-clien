@@ -11,18 +11,16 @@ function DetailAbsensiSA() {
   const [absensi, setAbsensi] = useState(null);
   const { id } = useParams();
 
-  const getAbsensiId = async () => {
-    try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/absensi/getData/${id}`
-      );
-      setAbsensi(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const getAbsensiId = async () => {
+      try {
+        const res = await axios.get(`${API_DUMMY}/api/absensi/getData/${id}`);
+        setAbsensi(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getAbsensiId();
   }, [id]);
 

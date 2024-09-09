@@ -15,18 +15,19 @@ function EditShift() {
   const { id } = useParams();
   const history = useHistory();
 
-  const getShift = async () => {
-    try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/shift/getbyId/${id}`
-      );
-      setNamaShift(res.data.namaShift);
-      setWaktuMasuk(res.data.waktuMasuk);
-      setWaktuPulang(res.data.waktuPulang);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    const getShift = async () => {
+      try {
+        const res = await axios.get(`${API_DUMMY}/api/shift/getbyId/${id}`);
+        setNamaShift(res.data.namaShift);
+        setWaktuMasuk(res.data.waktuMasuk);
+        setWaktuPulang(res.data.waktuPulang);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getShift();
+  }, [id]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const shift = {
@@ -35,11 +36,7 @@ function EditShift() {
       waktuPulang: waktuPulang,
     };
     try {
-      await axios.put(
-        `${API_DUMMY}/api/shift/editbyId/${id}`,
-        shift,
-
-      );
+      await axios.put(`${API_DUMMY}/api/shift/editbyId/${id}`, shift);
       Swal.fire({
         title: "Berhasil",
         text: "Shift berhasil diupdate",
@@ -59,10 +56,6 @@ function EditShift() {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    getShift();
-  }, [id]);
 
   return (
     <div className="flex flex-col h-screen">

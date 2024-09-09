@@ -14,20 +14,18 @@ function DetailAdmin() {
     username: "",
   });
 
-  const getUserData = async () => {
-    try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/admin/getById/${id}`
-      );
-      setAdmin(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const res = await axios.get(`${API_DUMMY}/api/admin/getById/${id}`);
+        setAdmin(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getUserData();
-  }, []);
+  }, [id]);
 
   return (
     <div className="flex flex-col h-screen">
@@ -110,7 +108,7 @@ function DetailAdmin() {
                         ? admin.imageAdmin
                         : "https://demo-absen.excellentsistem.com/images/admin/User.png"
                     }
-                    alt="Image Admin"
+                    alt={admin.username}
                   />
 
                   {/* <!-- Button --> */}

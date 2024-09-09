@@ -11,18 +11,18 @@ function DetailShiftSA() {
   const [shift, setShift] = useState(null);
   const { id } = useParams();
 
-  const getShiftId = async () => {
-    try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/shift/getbyId/${id}`
-      );
-      setShift(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   useEffect(() => {
+    const getShiftId = async () => {
+      try {
+        const response = await axios.get(
+          `${API_DUMMY}/api/shift/getbyId/${id}`
+        );
+        setShift(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
     getShiftId();
   }, [id]);
 
