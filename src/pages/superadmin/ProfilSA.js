@@ -167,8 +167,8 @@ function ProfilSA() {
         <Navbar />
         <div className="flex h-full">
           <Sidebar />
-          <div className="content-page container p-8 min-h-screen ml-0 md:ml-64 mt-20">
-            <Tabs aria-label="Tabs with underline">
+          <div className="content-page container p-8 ml-0 md:ml-72 mt-10">
+            <Tabs aria-label="Tabs with underline" style="underline">
               <Tabs.Item active title="Profile" icon={HiUserCircle}>
                 {/* Konten tab Profil */}
                 <div className="font-medium text-gray-800 dark:text-white">
