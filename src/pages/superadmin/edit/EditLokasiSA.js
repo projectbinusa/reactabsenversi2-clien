@@ -13,17 +13,20 @@ function EditLokasiSA() {
   const [namaLokasi, setNamaLokasi] = useState("");
   const [alamat, setAlamat] = useState("");
 
-  const getLokasi = async () => {
-    try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/lokasi/getByIdLokasi/${idLokasi}`
-      );
-      setNamaLokasi(res.data.namaLokasi);
-      setAlamat(res.data.alamat);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    const getLokasi = async () => {
+      try {
+        const res = await axios.get(
+          `${API_DUMMY}/api/lokasi/getByIdLokasi/${idLokasi}`
+        );
+        setNamaLokasi(res.data.namaLokasi);
+        setAlamat(res.data.alamat);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getLokasi();
+  }, [idLokasi]);
 
   const UbahLokasi = async (e) => {
     e.preventDefault();
@@ -45,10 +48,6 @@ function EditLokasiSA() {
       Swal.fire("Gagal", "Gagal merubah data ", "error");
     }
   };
-
-  useEffect(() => {
-    getLokasi();
-  }, [idLokasi]);
 
   return (
     <div className="flex flex-col h-screen">

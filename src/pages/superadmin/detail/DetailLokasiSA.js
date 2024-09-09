@@ -12,21 +12,22 @@ function DetailLokasiSA() {
   const [namaLokasi, setNamaLokasi] = useState("");
   const [alamat, setAlamat] = useState("");
 
-  const getLokasi = async () => {
-    try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/lokasi/getByIdLokasi/${idLokasi}`
-      );
-      setNamaLokasi(res.data.namaLokasi);
-      setAlamat(res.data.alamat);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const getLokasi = async () => {
+      try {
+        const res = await axios.get(
+          `${API_DUMMY}/api/lokasi/getByIdLokasi/${idLokasi}`
+        );
+        setNamaLokasi(res.data.namaLokasi);
+        setAlamat(res.data.alamat);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getLokasi();
   }, [idLokasi]);
+
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
@@ -55,9 +56,7 @@ function DetailLokasiSA() {
 
                 <div className="mt-5 text-left">
                   {/* <!-- Form Input --> */}
-                  <form
-
-                  >
+                  <form>
                     {/* <!-- Nama & Alamat Input --> */}
                     <div className="grid md:grid-cols-2 md:gap-6">
                       <div className="relative z-0 w-full mb-6 group">
@@ -65,7 +64,7 @@ function DetailLokasiSA() {
                           type="text"
                           name="nama_lokasi"
                           id="nama_lokasi"
-                          value={namaLokasi ? namaLokasi  : "kosong"}
+                          value={namaLokasi ? namaLokasi : "kosong"}
                           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                           placeholder=" "
                           autoComplete="off"

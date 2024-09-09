@@ -11,18 +11,18 @@ function DetailOrganisasiSA() {
   const [organisasi, setOrganisasi] = useState(null);
   const { id } = useParams();
 
-  const getOrganisasiId = async () => {
-    try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/organisasi/getById/${id}`
-      );
-      setOrganisasi(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const getOrganisasiId = async () => {
+      try {
+        const res = await axios.get(
+          `${API_DUMMY}/api/organisasi/getById/${id}`
+        );
+        setOrganisasi(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getOrganisasiId();
   }, [id]);
 

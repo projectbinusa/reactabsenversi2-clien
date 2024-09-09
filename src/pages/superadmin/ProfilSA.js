@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Tabs } from "flowbite-react";
-import { HiAdjustments, HiClipboardList, HiUserCircle } from "react-icons/hi";
+import { HiAdjustments, HiUserCircle } from "react-icons/hi";
 import { MdDashboard } from "react-icons/md";
 import Navbar from "../../components/NavbarSuper";
 import Sidebar from "../../components/SidebarUser";
@@ -18,7 +18,7 @@ function ProfilSA() {
   const [showPasswordd, setShowPasswordd] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [ubahUsername, setUbahUsername] = useState(false);
-  const [profile, setProfile] = useState([]);
+  const [, setProfile] = useState([]);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,6 @@ function ProfilSA() {
   const id = localStorage.getItem("superadminId");
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [edit, setEdit] = useState(false);
   const [passwordLama, setPasswordLama] = useState("");
   const [passwordBaru, setPasswordBaru] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -44,7 +43,7 @@ function ProfilSA() {
     }
 
     try {
-      const response = await axios.put(
+      await axios.put(
         `${API_DUMMY}/api/superadmin/edit-password/${id}`,
         {
           old_password: passwordLama,
@@ -66,25 +65,28 @@ function ProfilSA() {
     }
   };
 
-  const getProfile = async () => {
-    try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/superadmin/getbyid/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const response = await axios.get(
+          `${API_DUMMY}/api/superadmin/getbyid/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      setProfile(response.data);
-      setImageAdmin(response.data.imageSuperAdmin);
-      setEmail(response.data.email);
-      setUsername(response.data.username);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+        setProfile(response.data);
+        setImageAdmin(response.data.imageSuperAdmin);
+        setEmail(response.data.email);
+        setUsername(response.data.username);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    getProfile();
+  }, [id, token]);
 
   const HandleUbahUsernameEmail = async (e) => {
     e.preventDefault();
@@ -118,10 +120,6 @@ function ProfilSA() {
       Swal.fire("Gagal", "Gagal mengubah username dan email", "error");
     }
   };
-
-  useEffect(() => {
-    getProfile();
-  }, []);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -170,7 +168,7 @@ function ProfilSA() {
         <div className="flex h-full">
           <Sidebar />
           <div className="content-page container p-8 min-h-screen ml-0 md:ml-64 mt-20">
-            <Tabs aria-label="Tabs with underline" style="underline">
+            <Tabs aria-label="Tabs with underline">
               <Tabs.Item active title="Profile" icon={HiUserCircle}>
                 {/* Konten tab Profil */}
                 <div className="font-medium text-gray-800 dark:text-white">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
 import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,7 +14,7 @@ function AddLokasiSA() {
   const [organisasiSelected, setOrganisasiSelected] = useState("");
   const idSuperAdmin = localStorage.getItem("superadminId");
 
-  const getAllOrganisasi = async () => {
+  const getAllOrganisasi = useCallback(async () => {
     try {
       const org = await axios.get(
         `${API_DUMMY}/api/organisasi/superadmin/${idSuperAdmin}`
@@ -23,11 +23,11 @@ function AddLokasiSA() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [idSuperAdmin]);
 
   useEffect(() => {
     getAllOrganisasi();
-  }, []);
+  }, [getAllOrganisasi]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,11 +123,14 @@ function AddLokasiSA() {
                           <option value="" disabled>
                             Pilih Organisasi
                           </option>
-                          {organisasiList.slice().reverse().map((org) => (
-                            <option key={org.id} value={org.id}>
-                              {org.namaOrganisasi}
-                            </option>
-                          ))}
+                          {organisasiList
+                            .slice()
+                            .reverse()
+                            .map((org) => (
+                              <option key={org.id} value={org.id}>
+                                {org.namaOrganisasi}
+                              </option>
+                            ))}
                         </select>
                         <label
                           htmlFor="organisasi"

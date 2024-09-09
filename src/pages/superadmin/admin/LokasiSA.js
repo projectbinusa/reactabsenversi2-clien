@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
-import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfo,
@@ -10,9 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Swal from "sweetalert2";
-
 import { API_DUMMY } from "../../../utils/api";
-
 import { Pagination } from "flowbite-react";
 import SidebarNavbar from "../../../components/SidebarNavbar";
 
@@ -23,33 +20,32 @@ function LokasiSA() {
   const [limit, setLimit] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
   const idSuperAdmin = localStorage.getItem("superadminId");
 
-  const getLokasiBySuperAdmin = async () => {
-    try {
-      const lok = await axios.get(
-        `${API_DUMMY}/api/lokasi/superadmin/${idSuperAdmin}`
-      );
-      setLokasiList(lok.data);
-
-      // Mengambil jumlah karyawan untuk setiap lokasi
-      const jumlahKaryawanData = {};
-      for (const lokasi of lok.data) {
-        const kar = await axios.get(
-          `${API_DUMMY}/api/user/${lokasi.admin.id}/users`
-        );
-        jumlahKaryawanData[lokasi.admin.id] = kar.data.length;
-      }
-      setJumlahKaryawan(jumlahKaryawanData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const getLokasiBySuperAdmin = async () => {
+      try {
+        const lok = await axios.get(
+          `${API_DUMMY}/api/lokasi/superadmin/${idSuperAdmin}`
+        );
+        setLokasiList(lok.data);
+
+        // Mengambil jumlah karyawan untuk setiap lokasi
+        const jumlahKaryawanData = {};
+        for (const lokasi of lok.data) {
+          const kar = await axios.get(
+            `${API_DUMMY}/api/user/${lokasi.admin.id}/users`
+          );
+          jumlahKaryawanData[lokasi.admin.id] = kar.data.length;
+        }
+        setJumlahKaryawan(jumlahKaryawanData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getLokasiBySuperAdmin();
-  }, []);
+  }, [idSuperAdmin]);
 
   const deleteLokasi = async (idLokasi) => {
     try {
@@ -186,66 +182,69 @@ function LokasiSA() {
                   </thead>
                   <tbody className="text-left">
                     {paginatedLokasi.length > 0 ? (
-                      paginatedLokasi.slice().reverse().map((lokasi, index) => (
-                        <tr
-                          key={lokasi.idLokasi}
-                          className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                        >
-                          <th
-                            scope="row"
-                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      paginatedLokasi
+                        .slice()
+                        .reverse()
+                        .map((lokasi, index) => (
+                          <tr
+                            key={lokasi.idLokasi}
+                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                           >
-                            {(currentPage - 1) * limit + index + 1}
-                          </th>
-                          <td className="px-6 py-4">{lokasi.namaLokasi}</td>
-                          <td className="px-6 py-4">{lokasi.alamat}</td>
-                          <td className="px-6 py-4">
-                            {jumlahKaryawan[lokasi.admin.id]}
-                          </td>
-                          <td className="px-6 py-4">
-                            {lokasi.organisasi.namaOrganisasi}
-                          </td>
-                          <td className="py-3">
-                            <div className="flex items-center -space-x-4 ml-12">
-                              <a
-                                href={`/superadmin/detailLokasi/${lokasi.idLokasi}`}
-                              >
-                                <button className="z-20 block rounded-full border-2 border-white bg-blue-100 p-4 text-blue-700 active:bg-blue-50">
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                            >
+                              {(currentPage - 1) * limit + index + 1}
+                            </th>
+                            <td className="px-6 py-4">{lokasi.namaLokasi}</td>
+                            <td className="px-6 py-4">{lokasi.alamat}</td>
+                            <td className="px-6 py-4">
+                              {jumlahKaryawan[lokasi.admin.id]}
+                            </td>
+                            <td className="px-6 py-4">
+                              {lokasi.organisasi.namaOrganisasi}
+                            </td>
+                            <td className="py-3">
+                              <div className="flex items-center -space-x-4 ml-12">
+                                <a
+                                  href={`/superadmin/detailLokasi/${lokasi.idLokasi}`}
+                                >
+                                  <button className="z-20 block rounded-full border-2 border-white bg-blue-100 p-4 text-blue-700 active:bg-blue-50">
+                                    <span className="relative inline-block">
+                                      <FontAwesomeIcon
+                                        icon={faInfo}
+                                        className="h-4 w-4"
+                                      />
+                                    </span>
+                                  </button>
+                                </a>
+                                <a
+                                  href={`/superadmin/editLokasi/${lokasi.idLokasi}`}
+                                >
+                                  <button className="z-30 block rounded-full border-2 border-white bg-yellow-100 p-4 text-yellow-700 active:bg-red-50">
+                                    <span className="relative inline-block">
+                                      <FontAwesomeIcon
+                                        icon={faPenToSquare}
+                                        className="h-4 w-4"
+                                      />
+                                    </span>
+                                  </button>
+                                </a>
+                                <button
+                                  onClick={() => deleteLokasi(lokasi.idLokasi)}
+                                  className="z-30 block rounded-full border-2 border-white bg-red-100 p-4 text-red-700 active:bg-red-50"
+                                >
                                   <span className="relative inline-block">
                                     <FontAwesomeIcon
-                                      icon={faInfo}
+                                      icon={faTrash}
                                       className="h-4 w-4"
                                     />
                                   </span>
                                 </button>
-                              </a>
-                              <a
-                                href={`/superadmin/editLokasi/${lokasi.idLokasi}`}
-                              >
-                                <button className="z-30 block rounded-full border-2 border-white bg-yellow-100 p-4 text-yellow-700 active:bg-red-50">
-                                  <span className="relative inline-block">
-                                    <FontAwesomeIcon
-                                      icon={faPenToSquare}
-                                      className="h-4 w-4"
-                                    />
-                                  </span>
-                                </button>
-                              </a>
-                              <button
-                                onClick={() => deleteLokasi(lokasi.idLokasi)}
-                                className="z-30 block rounded-full border-2 border-white bg-red-100 p-4 text-red-700 active:bg-red-50"
-                              >
-                                <span className="relative inline-block">
-                                  <FontAwesomeIcon
-                                    icon={faTrash}
-                                    className="h-4 w-4"
-                                  />
-                                </span>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
+                              </div>
+                            </td>
+                          </tr>
+                        ))
                     ) : (
                       <tr>
                         <td colSpan="6" className="text-center py-4">
@@ -254,7 +253,6 @@ function LokasiSA() {
                       </tr>
                     )}
                   </tbody>
-
                 </table>
               </div>
               <Pagination

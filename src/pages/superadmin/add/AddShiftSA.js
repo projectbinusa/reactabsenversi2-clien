@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
 import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,7 +17,7 @@ function AddShift() {
   const token = localStorage.getItem("token");
   const history = useHistory();
 
-  const getAllAdmin = async () => {
+  const getAllAdmin = useCallback(async () => {
     try {
       const response = await axios.get(`${API_DUMMY}/api/admin/all`, {
         headers: {
@@ -29,11 +29,11 @@ function AddShift() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     getAllAdmin();
-  }, []);
+  }, [getAllAdmin]);
 
   const TambahShift = async (e) => {
     e.preventDefault();
@@ -44,10 +44,7 @@ function AddShift() {
       adminId: idAdmin,
     };
     try {
-      const response = await axios.post(
-        `${API_DUMMY}/api/shift/tambahShift/${idAdmin}`,
-        shift
-      );
+      await axios.post(`${API_DUMMY}/api/shift/tambahShift/${idAdmin}`, shift);
       Swal.fire({
         title: "Berhasil",
         text: "Berhasil menambahkan shift",
@@ -166,15 +163,18 @@ function AddShift() {
                           name="id_admin"
                           className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
                         >
-                          <option value="" disabled >
+                          <option value="" disabled>
                             Pilih Admin
                           </option>
                           {adminList &&
-                            adminList.slice().reverse().map((org) => (
-                              <option key={org.id} value={org.id}>
-                                {org.username}
-                              </option>
-                            ))}
+                            adminList
+                              .slice()
+                              .reverse()
+                              .map((org) => (
+                                <option key={org.id} value={org.id}>
+                                  {org.username}
+                                </option>
+                              ))}
                         </select>
                         <label
                           htmlFor="Admin"

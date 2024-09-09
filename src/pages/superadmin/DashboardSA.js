@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/NavbarSuper";
-import Sidebar from "../../components/SidebarUser";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,13 +16,9 @@ function DashboardSA() {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [userData, setUserData] = useState([]);
   const [admin, setAdmin] = useState([]);
-  const [absenData, setAbsenData] = useState([]);
-  const [jabatanData, setJabatanData] = useState([]);
-  const [lokasiData, setLokasiData] = useState([]);
   const [organisasiData, setOrganisasiData] = useState([]);
   const [username, setUsername] = useState("");
   const token = localStorage.getItem("token");
-  const idSuperAdmin = localStorage.getItem("superadminId");
   const id = localStorage.getItem("superadminId");
 
   useEffect(() => {
@@ -63,35 +58,32 @@ function DashboardSA() {
     }
   };
 
-  const getUser = () =>
-    fetchData(`${API_DUMMY}/api/user/get-allUser`, setUserData);
-  const getAbsensi = () =>
-    fetchData(`${API_DUMMY}/api/absensi/getAll`, setAbsenData);
-  const getJabatan = () =>
-    fetchData(`${API_DUMMY}/api/jabatan/all`, setJabatanData);
-  const getLokasi = () =>
-    fetchData(`${API_DUMMY}/api/lokasi/getall`, setLokasiData);
-  const getOrganisasi = () =>
-    fetchData(
-      `${API_DUMMY}/api/organisasi/superadmin/${id}`,
-      setOrganisasiData
-    );
+  useEffect(() => {
+    const getUser = () => {
+      fetchData(`${API_DUMMY}/api/user/get-allUser`, setUserData);
+    };
 
-  const getUsername = async () => {
-    try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/superadmin/getbyid/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setUsername(response.data.username);
-    } catch (error) {
-      console.error("Error fetching username:", error);
-    }
-  };
+    const getUsername = async () => {
+      try {
+        const response = await axios.get(
+          `${API_DUMMY}/api/superadmin/getbyid/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUsername(response.data.username);
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    };
+
+    getUser();
+    getUsername();
+    getAdmin();
+    getOrganisasiSA();
+  }, [id, token]); // Only add id and token if they are dynamic
 
   const getAdmin = async () => {
     const token = localStorage.getItem("token");
@@ -133,26 +125,6 @@ function DashboardSA() {
     }
   };
 
-  const formatDate = (tanggal) => {
-    const date = new Date(tanggal);
-    return date.toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
-  useEffect(() => {
-    getUser();
-    getAbsensi();
-    getUsername();
-    getJabatan();
-    getLokasi();
-    getOrganisasi();
-    getAdmin();
-    getOrganisasiSA();
-  }, []);
-
   useEffect(() => {
     if (localStorage.getItem("loginSuccess") === "true") {
       Swal.fire({
@@ -178,9 +150,9 @@ function DashboardSA() {
                 Selamat Datang di Absensi
                 <span> @{username}</span>
               </h2>
-              <a className="profile-menu-link">{day}, </a>
-              <a className="profile-menu-link active">{date} - </a>
-              <a className="profile-menu-link">{time}</a>
+              <button className="profile-menu-link">{day}, </button>
+              <button className="profile-menu-link active">{date} - </button>
+              <button className="profile-menu-link">{time}</button>
             </div>
           </div>
 
