@@ -6,6 +6,8 @@ import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../../utils/api";
+import SidebarNavbar from "../../../components/SidebarNavbar";
+import NavbarAdmin from "../../../components/NavbarAdmin";
 
 function AddKaryawan() {
   const [showPassword, setShowPassword] = useState(false);
@@ -67,14 +69,34 @@ function AddKaryawan() {
   const tambahKaryawan = async (e) => {
     e.preventDefault();
 
+    const trimmedEmail = email.trim();
+    const trimmedUsername = username.trim();
+
     try {
+      // Fetch data semua pengguna
+      const response = await axios.get(`${API_DUMMY}/api/user/get-allUser`);
+      const existingUsers = response.data;
+
+      const isEmailExists = existingUsers.some(
+        (user) => user.email.toLowerCase() === trimmedEmail.toLowerCase()
+      );
+      const isUsernameExists = existingUsers.some(
+        (user) => user.username.toLowerCase() === trimmedUsername.toLowerCase()
+      );
+
+      if (isEmailExists || isUsernameExists) {
+        Swal.fire("Error", "Email atau Username sudah terdaftar", "error");
+        return;
+      }
+
       const newUser = {
-        email: email,
-        username: username,
+        email: trimmedEmail,
+        username: trimmedUsername,
         password: password,
       };
-      const response = await axios.post(
-        `${API_DUMMY}/api/user/tambahkaryawan/${idAdmin}?idOrganisasi=${idOrganisasi}&idJabatan=${idJabatan}&idShift=${idShift}`,
+
+      await axios.post(
+        `${API_DUMMY}/api/user/tambahkaryawan/${idAdmin}?&idOrganisasi=${idOrganisasi}&idShift=${idShift}`,
         newUser
       );
       Swal.fire({
@@ -94,13 +116,13 @@ function AddKaryawan() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <Navbar />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <NavbarAdmin />
         </div>
-        <div className="sm:ml-64 content-page container p-8 ml-14 md:ml-64 mt-12">
+        <div className="flex-grow container p-4 sm:ml-64 ml-4 md:ml-64 mt-10">
           <div className="p-4">
             <div className="p-5">
               <div className="w-full p-4 text-center bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -171,7 +193,7 @@ function AddKaryawan() {
                           Pilih Organisasi
                         </option>
                         {organisasiList &&
-                          organisasiList.slice().reverse().map((org) => (
+                          organisasiList.map((org) => (
                             <option key={org.id} value={org.id}>
                               {org.namaOrganisasi}
                             </option>
@@ -195,7 +217,7 @@ function AddKaryawan() {
                         <option value="" disabled>
                           Pilih Jabatan
                         </option>
-                        {jabatanList.slice().reverse().map((jab) => (
+                        {jabatanList.map((jab) => (
                           <option key={jab.idJabatan} value={jab.idJabatan}>
                             {jab.namaJabatan}
                           </option>
@@ -218,7 +240,7 @@ function AddKaryawan() {
                         <option value="" disabled>
                           Pilih Shift
                         </option>
-                        {shiftList.slice().reverse().map((sft) => (
+                        {shiftList.map((sft) => (
                           <option key={sft.id} value={sft.id}>
                             {sft.namaShift}
                           </option>

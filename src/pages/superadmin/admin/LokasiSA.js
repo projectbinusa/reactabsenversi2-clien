@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NavbarSuper from "../../../components/NavbarSuper";
-import Sidebar from "../../../components/SidebarUser";
+import Navbar from "../../../components/NavbarSuper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfo,
@@ -10,11 +9,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Swal from "sweetalert2";
-
 import { API_DUMMY } from "../../../utils/api";
-
 import { Pagination } from "flowbite-react";
-
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function LokasiSA() {
   const [lokasiList, setLokasiList] = useState([]);
@@ -23,33 +20,32 @@ function LokasiSA() {
   const [limit, setLimit] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
   const idSuperAdmin = localStorage.getItem("superadminId");
 
-  const getLokasiBySuperAdmin = async () => {
-    try {
-      const lok = await axios.get(
-        `${API_DUMMY}/api/lokasi/superadmin/${idSuperAdmin}`
-      );
-      setLokasiList(lok.data);
-
-      // Mengambil jumlah karyawan untuk setiap lokasi
-      const jumlahKaryawanData = {};
-      for (const lokasi of lok.data) {
-        const kar = await axios.get(
-          `${API_DUMMY}/api/user/${lokasi.admin.id}/users`
-        );
-        jumlahKaryawanData[lokasi.admin.id] = kar.data.length;
-      }
-      setJumlahKaryawan(jumlahKaryawanData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const getLokasiBySuperAdmin = async () => {
+      try {
+        const lok = await axios.get(
+          `${API_DUMMY}/api/lokasi/superadmin/${idSuperAdmin}`
+        );
+        setLokasiList(lok.data);
+
+        // Mengambil jumlah karyawan untuk setiap lokasi
+        const jumlahKaryawanData = {};
+        for (const lokasi of lok.data) {
+          const kar = await axios.get(
+            `${API_DUMMY}/api/user/${lokasi.admin.id}/users`
+          );
+          jumlahKaryawanData[lokasi.admin.id] = kar.data.length;
+        }
+        setJumlahKaryawan(jumlahKaryawanData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getLokasiBySuperAdmin();
-  }, []);
+  }, [idSuperAdmin]);
 
   const deleteLokasi = async (idLokasi) => {
     try {
@@ -65,9 +61,7 @@ function LokasiSA() {
       });
 
       if (result.isConfirmed) {
-        await axios.delete(
-          `${API_DUMMY}/api/lokasi/delete/${idLokasi}`
-        );
+        await axios.delete(`${API_DUMMY}/api/lokasi/delete/${idLokasi}`);
         Swal.fire("Dihapus!", "Data lokasi telah dihapus.", "success");
         window.location.reload();
       }
@@ -113,11 +107,11 @@ function LokasiSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <NavbarSuper />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-0 md:ml-64 mt-12">
           <div className="p-5 mt-10">
@@ -187,66 +181,77 @@ function LokasiSA() {
                     </tr>
                   </thead>
                   <tbody className="text-left">
-                    {paginatedLokasi.slice().reverse().slice().reverse().map((lokasi, index) => (
-                      <tr
-                        key={lokasi.idLokasi}
-                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                      >
-                        <th
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                          {(currentPage - 1) * limit + index + 1}
-                        </th>
-                        <td className="px-6 py-4">{lokasi.namaLokasi}</td>
-                        <td className="px-6 py-4">{lokasi.alamat}</td>
-                        <td className="px-6 py-4">
-                          {jumlahKaryawan[lokasi.admin.id]}
-                        </td>
-                        <td className="px-6 py-4">
-                          {lokasi.organisasi.namaOrganisasi}
-                        </td>
-                        <td className="py-3">
-                          <div className="flex items-center -space-x-4 ml-12">
-                            <a
-                              href={`/superadmin/detailLokasi/${lokasi.idLokasi}`}
+                    {paginatedLokasi.length > 0 ? (
+                      paginatedLokasi
+                        .slice()
+                        .reverse()
+                        .map((lokasi, index) => (
+                          <tr
+                            key={lokasi.idLokasi}
+                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                          >
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                             >
-                              <button className="z-20 block rounded-full border-2 border-white bg-blue-100 p-4 text-blue-700 active:bg-blue-50">
-                                <span className="relative inline-block">
-                                  <FontAwesomeIcon
-                                    icon={faInfo}
-                                    className="h-4 w-4"
-                                  />
-                                </span>
-                              </button>
-                            </a>
-                            <a
-                              href={`/superadmin/editLokasi/${lokasi.idLokasi}`}
-                            >
-                              <button className="z-30 block rounded-full border-2 border-white bg-yellow-100 p-4 text-yellow-700 active:bg-red-50">
-                                <span className="relative inline-block">
-                                  <FontAwesomeIcon
-                                    icon={faPenToSquare}
-                                    className="h-4 w-4"
-                                  />
-                                </span>
-                              </button>
-                            </a>
-                            <button
-                              onClick={() => deleteLokasi(lokasi.idLokasi)}
-                              className="z-30 block rounded-full border-2 border-white bg-red-100 p-4 text-red-700 active:bg-red-50"
-                            >
-                              <span className="relative inline-block">
-                                <FontAwesomeIcon
-                                  icon={faTrash}
-                                  className="h-4 w-4"
-                                />
-                              </span>
-                            </button>
-                          </div>
+                              {(currentPage - 1) * limit + index + 1}
+                            </th>
+                            <td className="px-6 py-4">{lokasi.namaLokasi}</td>
+                            <td className="px-6 py-4">{lokasi.alamat}</td>
+                            <td className="px-6 py-4">
+                              {jumlahKaryawan[lokasi.admin.id]}
+                            </td>
+                            <td className="px-6 py-4">
+                              {lokasi.organisasi.namaOrganisasi}
+                            </td>
+                            <td className="py-3">
+                              <div className="flex items-center -space-x-4 ml-12">
+                                <a
+                                  href={`/superadmin/detailLokasi/${lokasi.idLokasi}`}
+                                >
+                                  <button className="z-20 block rounded-full border-2 border-white bg-blue-100 p-4 text-blue-700 active:bg-blue-50">
+                                    <span className="relative inline-block">
+                                      <FontAwesomeIcon
+                                        icon={faInfo}
+                                        className="h-4 w-4"
+                                      />
+                                    </span>
+                                  </button>
+                                </a>
+                                <a
+                                  href={`/superadmin/editLokasi/${lokasi.idLokasi}`}
+                                >
+                                  <button className="z-30 block rounded-full border-2 border-white bg-yellow-100 p-4 text-yellow-700 active:bg-red-50">
+                                    <span className="relative inline-block">
+                                      <FontAwesomeIcon
+                                        icon={faPenToSquare}
+                                        className="h-4 w-4"
+                                      />
+                                    </span>
+                                  </button>
+                                </a>
+                                <button
+                                  onClick={() => deleteLokasi(lokasi.idLokasi)}
+                                  className="z-30 block rounded-full border-2 border-white bg-red-100 p-4 text-red-700 active:bg-red-50"
+                                >
+                                  <span className="relative inline-block">
+                                    <FontAwesomeIcon
+                                      icon={faTrash}
+                                      className="h-4 w-4"
+                                    />
+                                  </span>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                    ) : (
+                      <tr>
+                        <td colSpan="6" className="text-center py-4">
+                          Tidak ada data yang ditampilkan
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>

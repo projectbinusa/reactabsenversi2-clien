@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { API_DUMMY } from "../../../utils/api";
 
 function EditJabatanSA() {
-  const [jabatan, setJabatan] = useState("");
+  const [, setJabatan] = useState("");
   const [namaJabatan, setNamaJabatan] = useState("");
   const { idJabatan } = useParams();
   const history = useHistory();
@@ -28,7 +28,7 @@ function EditJabatanSA() {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [idJabatan]);
 
   const updateAdmin = async (e) => {
     e.preventDefault();
@@ -99,19 +99,19 @@ function EditJabatanSA() {
 
                   {/* <!-- Button --> */}
                   <div className="flex justify-between">
-                      <a
-                        className="focus:outline-none text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                        href="/superadmin/jabatan"
-                      >
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                      </a>
-                      <button
-                        type="submit"
-                        className="text-white bg-indigo-500 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800"
-                      >
-                        <FontAwesomeIcon icon={faFloppyDisk} />
-                      </button>
-                    </div>
+                    <a
+                      className="focus:outline-none text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                      href="/superadmin/jabatan"
+                    >
+                      <FontAwesomeIcon icon={faArrowLeft} />
+                    </a>
+                    <button
+                      type="submit"
+                      className="text-white bg-indigo-500 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800"
+                    >
+                      <FontAwesomeIcon icon={faFloppyDisk} />
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>

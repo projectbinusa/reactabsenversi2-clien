@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import NavbarSuper from "../../../components/NavbarSuper";
-import Sidebar from "../../../components/SidebarUser";
+import Navbar from "../../../components/NavbarSuper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { API_DUMMY } from "../../../utils/api";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function AddUser() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,73 +24,85 @@ function AddUser() {
   const [adminList, setAdminList] = useState([]);
   const history = useHistory();
 
-  const getAllAdmin = async () => {
-    try {
-      const adm = await axios.get(
-        `${API_DUMMY}/api/admin/get-all-by-super/${idSuperAdmin}`
-      );
-      setAdminList(adm.data);
-    } catch (Error) {
-      console.log(Error);
-    }
-  };
-  const handleShowPasswordChange = () => {
-    setShowPassword(!showPassword);
-  };
-
   useEffect(() => {
+    const getAllAdmin = async () => {
+      try {
+        const adm = await axios.get(
+          `${API_DUMMY}/api/admin/get-all-by-super/${idSuperAdmin}`
+        );
+        setAdminList(adm.data);
+      } catch (Error) {
+        console.log(Error);
+      }
+    };
+
+    const GetAllOrganisasi = async () => {
+      try {
+        const response = await axios.get(
+          `${API_DUMMY}/api/organisasi/superadmin/${idSuperAdmin}`
+        );
+        setOrganisasiList(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const GetAllJabatan = async () => {
+      try {
+        const response = await axios.get(`${API_DUMMY}/api/jabatan/all`);
+        setJabatanList(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const GetAllShift = async () => {
+      try {
+        const response = await axios.get(
+          `${API_DUMMY}/api/shift/getBySuper/${idSuperAdmin}`
+        );
+        setShiftList(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     GetAllOrganisasi();
     GetAllJabatan();
     GetAllShift();
     getAllAdmin();
-  }, []);
-
-  const GetAllOrganisasi = async () => {
-    try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/organisasi/superadmin/${idSuperAdmin}`
-      );
-      setOrganisasiList(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const GetAllJabatan = async () => {
-    try {
-      const response = await axios.get(`${API_DUMMY}/api/jabatan/all`);
-      setJabatanList(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const GetAllShift = async () => {
-    try {
-      const response = await axios.get(
-
-        `${API_DUMMY}/api/shift/getall`
-
-        `http://localhost:2024/api/shift/getBySuper/${idSuperAdmin}`
-
-      );
-      setShiftList(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  }, [idSuperAdmin]);
 
   const tambahUser = async (e) => {
     e.preventDefault();
 
+    const trimmedEmail = email.trim();
+    const trimmedUsername = username.trim();
+
     try {
+      // Fetch data semua pengguna
+      const response = await axios.get(`${API_DUMMY}/api/user/get-allUser`);
+      const existingUsers = response.data;
+
+      const isEmailExists = existingUsers.some(
+        (user) => user.email.toLowerCase() === trimmedEmail.toLowerCase()
+      );
+      const isUsernameExists = existingUsers.some(
+        (user) => user.username.toLowerCase() === trimmedUsername.toLowerCase()
+      );
+
+      if (isEmailExists || isUsernameExists) {
+        Swal.fire("Error", "Email atau Username sudah terdaftar", "error");
+        return;
+      }
+
       const newUser = {
-        email: email,
-        username: username,
+        email: trimmedEmail,
+        username: trimmedUsername,
         password: password,
-        idAdmin: idAdmin,
       };
-      const response = await axios.post(
+
+      await axios.post(
         `${API_DUMMY}/api/user/tambahkaryawan/${idAdmin}?idOrganisasi=${idOrganisasi}&idJabatan=${idJabatan}&idShift=${idShift}`,
         newUser
       );
@@ -113,14 +125,18 @@ function AddUser() {
       console.log(error);
     }
   };
+
+  const handleShowPasswordChange = () => {
+    setShowPassword(!showPassword);
+  };
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <NavbarSuper />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-14 md:ml-64 mt-12">
           <div className="p-4">
@@ -178,22 +194,22 @@ function AddUser() {
                     </div>
                     <div className="relative z-0 w-full mb-6 group">
                       <label
-                        htmlFor="id_organisasi"
+                        htmlFor="id_admin"
                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                       >
                         Admin
                       </label>
                       <select
-                        value={idAdmin || ""}
-                        onChange={(e) => setIdAdmin(Number(e.target.value))}
-                        name="id_organisasi"
+                        value={idAdmin || ""} // Controls the selected option
+                        onChange={(e) => setIdAdmin(Number(e.target.value))} // Updates selected value
+                        name="id_admin"
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Pilih Admin
                         </option>
                         {adminList &&
-                          adminList.slice().reverse().map((org) => (
+                          adminList.map((org) => (
                             <option key={org.id} value={org.id}>
                               {org.username}
                             </option>
@@ -215,11 +231,11 @@ function AddUser() {
                         name="id_organisasi"
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Pilih Organisasi
                         </option>
                         {organisasiList &&
-                          organisasiList.slice().reverse().map((org) => (
+                          organisasiList.map((org) => (
                             <option key={org.id} value={org.id}>
                               {org.namaOrganisasi}
                             </option>
@@ -240,10 +256,10 @@ function AddUser() {
                         name="id_jabatan"
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Pilih Jabatan
                         </option>
-                        {jabatanList.slice().reverse().map((jab) => (
+                        {jabatanList.map((jab) => (
                           <option key={jab.idJabatan} value={jab.idJabatan}>
                             {jab.namaJabatan}
                           </option>
@@ -263,10 +279,10 @@ function AddUser() {
                         onChange={(e) => setIdShift(Number(e.target.value))}
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Pilih Shift
                         </option>
-                        {shiftList.slice().reverse().map((sft) => (
+                        {shiftList.map((sft) => (
                           <option key={sft.id} value={sft.id}>
                             {sft.namaShift}
                           </option>

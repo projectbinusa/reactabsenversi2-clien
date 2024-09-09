@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { toBeDisabled } from "@testing-library/jest-dom/matchers";
 import { API_DUMMY } from "../../../utils/api";
 import SidebarNavbar from "../../../components/SidebarNavbar";
+import "../css/AbsenMasuk.css"
 
 function AbsenPulang() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,6 +27,14 @@ function AbsenPulang() {
     west: 110.30093865296837, // Pojok R. Guru
     east: 110.30157620693905, // Pojok Satpam
   };
+
+    // koordinat excelent
+  // const allowedCoordinates = {
+  //   northWest: { lat: -6.982580885, lon: 110.404028235 },
+  //   northEast: { lat: -6.982580885, lon: 110.404118565 },
+  //   southWest: { lat: -6.982670715, lon: 110.404028235 },
+  //   southEast: { lat: -6.982670715, lon: 110.404118565 },
+  // };
 
   const isWithinAllowedCoordinates = (latitude, longitude) => {
     return (
@@ -267,9 +276,12 @@ function AbsenPulang() {
             <div className="text-base text-center mt-2">{ucapan}</div>
             <form onSubmit={""}>
               <p className="font-bold text-center mt-8">Foto:</p>
-              <div className="flex justify-center">
-                <Webcam audio={false} ref={webcamRef} />
-              </div>
+              <div className="flex justify-center webcam-container">
+                  <Webcam 
+                    audio={false} 
+                    ref={webcamRef} 
+                  />
+                </div>
               <div className="flex justify-center mt-6">
                 {fetchingLocation ? (
                   <p>Mendapatkan lokasi...</p>

@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarSuper";
-import Sidebar from "../../../components/SidebarUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCircleInfo,
   faInfo,
   faPenToSquare,
   faPlus,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Swal from "sweetalert2";
 
 import { API_DUMMY } from "../../../utils/api";
 
 import { Pagination } from "flowbite-react";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function JabatanSA() {
   const [userData, setUserData] = useState([]);
@@ -27,22 +25,26 @@ function JabatanSA() {
   const idSuperAdmin = localStorage.getItem("superadminId");
   const token = localStorage.getItem("token");
 
-  const getAllJabatan = async () => {
-    try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/jabatan/getBySuper/${idSuperAdmin} `,
-        {
-          headers: {
-            Authorization: `${token}`,
-          },
-        }
-      );
+  useEffect(() => {
+    const getAllJabatan = async () => {
+      try {
+        const response = await axios.get(
+          `${API_DUMMY}/api/jabatan/getBySuper/${idSuperAdmin} `,
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          }
+        );
 
-      setUserData(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+        setUserData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    getAllJabatan();
+  }, [idSuperAdmin, token]);
 
   const deleteData = async (idJabatan) => {
     Swal.fire({
@@ -56,14 +58,11 @@ function JabatanSA() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(
-            `${API_DUMMY}/api/jabatan/delete/` + idJabatan,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
+          await axios.delete(`${API_DUMMY}/api/jabatan/delete/` + idJabatan, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
 
           Swal.fire({
             icon: "success",
@@ -84,9 +83,6 @@ function JabatanSA() {
       }
     });
   };
-  useEffect(() => {
-    getAllJabatan();
-  }, []);
 
   useEffect(() => {
     const filteredData = userData.filter((jabatan) =>
@@ -120,11 +116,11 @@ function JabatanSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <Navbar />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className=" sm:ml-64 content-page container p-8  ml-0 md:ml-64 mt-5">
           <div className="p-5 mt-10">
@@ -189,60 +185,72 @@ function JabatanSA() {
                   </thead>
                   {/* <!-- Tabel Body --> */}
                   <tbody className="text-left">
-                    {paginatedJabatan.slice().reverse().slice().reverse().map((jabatan, index) => (
-                      <tr
-                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                        key={index}
-                      >
-                        <th
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                          {(currentPage - 1) * limit + index + 1}
-                        </th>
-                        <td className="px-6 py-4 capitalize">
-                          {jabatan.namaJabatan}
-                        </td>
-                        <td className="py-3">
-                          <div className="flex items-center -space-x-4">
-                            <a
-                              href={`/superadmin/detailJ/${jabatan.idJabatan}`}
+                    {paginatedJabatan.length > 0 ? (
+                      paginatedJabatan
+                        .slice()
+                        .reverse()
+                        .map((jabatan, index) => (
+                          <tr
+                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                            key={index}
+                          >
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                             >
-                              <button className="z-20 block rounded-full border-2 border-white bg-blue-100 p-4 text-blue-700 active:bg-blue-50">
-                                <span className="relative inline-block">
-                                  <FontAwesomeIcon
-                                    icon={faInfo}
-                                    className="h-4 w-4"
-                                  />
-                                </span>
-                              </button>
-                            </a>
-                            <a href={`/superadmin/editJ/${jabatan.idJabatan}`}>
-                              <button className="z-30 block rounded-full border-2 border-white bg-yellow-100 p-4 text-yellow-700 active:bg-red-50">
-                                <span className="relative inline-block">
-                                  <FontAwesomeIcon
-                                    icon={faPenToSquare}
-                                    className="h-4 w-4"
-                                  />
-                                </span>
-                              </button>
-                            </a>
-
-                            <button
-                              className="z-30 block rounded-full border-2 border-white bg-red-100 p-4 text-red-700 active:bg-red-50"
-                              onClick={() => deleteData(jabatan.idJabatan)}
-                            >
-                              <span className="relative inline-block">
-                                <FontAwesomeIcon
-                                  icon={faTrash}
-                                  className="h-4 w-4"
-                                />
-                              </span>
-                            </button>
-                          </div>
+                              {(currentPage - 1) * limit + index + 1}
+                            </th>
+                            <td className="px-6 py-4 capitalize">
+                              {jabatan.namaJabatan}
+                            </td>
+                            <td className="py-3">
+                              <div className="flex items-center -space-x-4">
+                                <a
+                                  href={`/superadmin/detailJ/${jabatan.idJabatan}`}
+                                >
+                                  <button className="z-20 block rounded-full border-2 border-white bg-blue-100 p-4 text-blue-700 active:bg-blue-50">
+                                    <span className="relative inline-block">
+                                      <FontAwesomeIcon
+                                        icon={faInfo}
+                                        className="h-4 w-4"
+                                      />
+                                    </span>
+                                  </button>
+                                </a>
+                                <a
+                                  href={`/superadmin/editJ/${jabatan.idJabatan}`}
+                                >
+                                  <button className="z-30 block rounded-full border-2 border-white bg-yellow-100 p-4 text-yellow-700 active:bg-red-50">
+                                    <span className="relative inline-block">
+                                      <FontAwesomeIcon
+                                        icon={faPenToSquare}
+                                        className="h-4 w-4"
+                                      />
+                                    </span>
+                                  </button>
+                                </a>
+                                <button
+                                  className="z-30 block rounded-full border-2 border-white bg-red-100 p-4 text-red-700 active:bg-red-50"
+                                  onClick={() => deleteData(jabatan.idJabatan)}
+                                >
+                                  <span className="relative inline-block">
+                                    <FontAwesomeIcon
+                                      icon={faTrash}
+                                      className="h-4 w-4"
+                                    />
+                                  </span>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                    ) : (
+                      <tr>
+                        <td colSpan="3" className="text-center py-4">
+                          Tidak ada data yang ditampilkan
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>

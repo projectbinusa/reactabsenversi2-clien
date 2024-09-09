@@ -43,7 +43,7 @@ function EditOrganisasiSA() {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [param.id]);
 
   const updateOrganisasi = async (e) => {
     e.preventDefault();

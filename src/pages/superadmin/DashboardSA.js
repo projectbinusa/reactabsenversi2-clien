@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/NavbarSuper";
-import Sidebar from "../../components/SidebarUser";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,19 +9,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import { API_DUMMY } from "../../utils/api";
+import SidebarNavbar from "../../components/SidebarNavbar";
 // import jwt from 'jsonwebtoken';
 
 function DashboardSA() {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [userData, setUserData] = useState([]);
   const [admin, setAdmin] = useState([]);
-  const [absenData, setAbsenData] = useState([]);
-  const [jabatanData, setJabatanData] = useState([]);
-  const [lokasiData, setLokasiData] = useState([]);
   const [organisasiData, setOrganisasiData] = useState([]);
   const [username, setUsername] = useState("");
   const token = localStorage.getItem("token");
-  const idSuperAdmin = localStorage.getItem("superadminId");
   const id = localStorage.getItem("superadminId");
 
   useEffect(() => {
@@ -62,35 +58,32 @@ function DashboardSA() {
     }
   };
 
-  const getUser = () =>
-    fetchData(`${API_DUMMY}/api/user/get-allUser`, setUserData);
-  const getAbsensi = () =>
-    fetchData(`${API_DUMMY}/api/absensi/getAll`, setAbsenData);
-  const getJabatan = () =>
-    fetchData(`${API_DUMMY}/api/jabatan/all`, setJabatanData);
-  const getLokasi = () =>
-    fetchData(`${API_DUMMY}/api/lokasi/getall`, setLokasiData);
-  const getOrganisasi = () =>
-    fetchData(
-      `${API_DUMMY}/api/organisasi/superadmin/${id}`,
-      setOrganisasiData
-    );
+  useEffect(() => {
+    const getUser = () => {
+      fetchData(`${API_DUMMY}/api/user/get-allUser`, setUserData);
+    };
 
-  const getUsername = async () => {
-    try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/superadmin/getbyid/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setUsername(response.data.username);
-    } catch (error) {
-      console.error("Error fetching username:", error);
-    }
-  };
+    const getUsername = async () => {
+      try {
+        const response = await axios.get(
+          `${API_DUMMY}/api/superadmin/getbyid/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUsername(response.data.username);
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    };
+
+    getUser();
+    getUsername();
+    getAdmin();
+    getOrganisasiSA();
+  }, [id, token]); // Only add id and token if they are dynamic
 
   const getAdmin = async () => {
     const token = localStorage.getItem("token");
@@ -132,26 +125,6 @@ function DashboardSA() {
     }
   };
 
-  const formatDate = (tanggal) => {
-    const date = new Date(tanggal);
-    return date.toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
-  useEffect(() => {
-    getUser();
-    getAbsensi();
-    getUsername();
-    getJabatan();
-    getLokasi();
-    getOrganisasi();
-    getAdmin();
-    getOrganisasiSA();
-  }, []);
-
   useEffect(() => {
     if (localStorage.getItem("loginSuccess") === "true") {
       Swal.fire({
@@ -164,22 +137,22 @@ function DashboardSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <Navbar />
+        <SidebarNavbar />
       </div>
       <div className="flex h-full">
-        <div className="fixed">
-          <Sidebar />
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
-        <div className="content-page container p-8 ml-0 md:ml-64 mt-12">
+        <div className="content-page container p-8 ml-0 md:ml-64 mt-12 overflow-x-hidden">
           <div className="mt-5 w-full">
             <div className="p-4 text-center bg-indigo-300 border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-              <h2 className="text-2xl font-semibold mb-4">
+              <h2 className="text-2xl font-semibold mb-4 capitalize">
                 Selamat Datang di Absensi
                 <span> @{username}</span>
               </h2>
-              <a className="profile-menu-link">{day}, </a>
-              <a className="profile-menu-link active">{date} - </a>
-              <a className="profile-menu-link">{time}</a>
+              <button className="profile-menu-link">{day}, </button>
+              <button className="profile-menu-link active">{date} - </button>
+              <button className="profile-menu-link">{time}</button>
             </div>
           </div>
 
@@ -242,42 +215,52 @@ function DashboardSA() {
                 {/* <!-- Tabel Head --> */}
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       No
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Email
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Username
                     </th>
                   </tr>
                 </thead>
                 {/* <!-- Tabel Body --> */}
                 <tbody className="text-left">
-                  {admin.slice().reverse().map((admin, index) => (
-                    <tr
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                      key={index}
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  {admin.length > 0 ? (
+                    admin.map((admin, index) => (
+                      <tr
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                        key={index}
                       >
-                        {index + 1}
-                      </th>
-                      <td className="px-6 py-4">
-                        <a
-                          href="/cdn-cgi/l/email-protection"
-                          className="__cf_email__"
-                          data-cfemail="5a363b23363b1a3d373b333674393537"
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
-                          {admin.email}
-                        </a>
+                          {index + 1}
+                        </th>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <a
+                            href="/cdn-cgi/l/email-protection"
+                            className="__cf_email__"
+                            data-cfemail="5a363b23363b1a3d373b333674393537"
+                          >
+                            {admin.email}
+                          </a>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {admin.username}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="3" className="text-center py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
-                      <td className="px-6 py-4 capitalize">{admin.username}</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -299,50 +282,64 @@ function DashboardSA() {
                 {/* <!-- Tabel Head --> */}
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       No
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Admin
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Nama
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Alamat
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Telepon
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
                       Email
                     </th>
                   </tr>
                 </thead>
                 {/* <!-- Tabel Body --> */}
                 <tbody className="text-left">
-                  {organisasiData.slice().reverse().map((admin, index) => (
-                    <tr
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                      key={index}
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  {organisasiData.length > 0 ? (
+                    organisasiData.map((admin, index) => (
+                      <tr
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                        key={index}
                       >
-                        {index + 1}
-                      </th>
-                      <td className="px-6 py-4 capitalize">
-                        {admin.admin.username}
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {index + 1}
+                        </th>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {admin.admin.username}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {admin.namaOrganisasi}
+                        </td>
+                        <td className="px-6 py-4 capitalize whitespace-nowrap">
+                          {admin.alamat}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {admin.nomerTelepon}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {admin.emailOrganisasi}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="text-center py-4">
+                        Tidak ada data yang ditampilkan
                       </td>
-                      <td className="px-6 py-4 capitalize">
-                        {admin.namaOrganisasi}
-                      </td>
-                      <td className="px-6 py-4 capitalize">{admin.alamat}</td>
-                      <td className="px-6 py-4">{admin.nomerTelepon}</td>
-                      <td className="px-6 py-4">{admin.emailOrganisasi}</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

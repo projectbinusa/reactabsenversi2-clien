@@ -8,22 +8,21 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { API_DUMMY } from "../../../utils/api";
 
 function DetailJabatanSA() {
-    const { id } = useParams();
+  const { id } = useParams();
   const [jabatan, setJabatan] = useState("");
 
-  const getJabatan = async () => {
-    try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/jabatan/getbyid/${id}`
-      );
-      setJabatan(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   useEffect(() => {
+    const getJabatan = async () => {
+      try {
+        const res = await axios.get(`${API_DUMMY}/api/jabatan/getbyid/${id}`);
+        setJabatan(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     getJabatan();
-  }, []);
+  }, [id]);
+
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">

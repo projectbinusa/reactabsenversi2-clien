@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NavbarSuper from "../../../components/NavbarSuper";
-import Sidebar from "../../../components/SidebarUser";
+import Navbar from "../../../components/NavbarSuper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfo,
@@ -12,6 +11,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Pagination } from "flowbite-react";
 import { API_DUMMY } from "../../../utils/api";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function User() {
   const [userData, setUserData] = useState([]);
@@ -24,14 +24,11 @@ function User() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.get(
-        `${API_DUMMY}/api/user/get-allUser`,
-        {
-          headers: {
-            Authorization: `${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_DUMMY}/api/user/get-allUser`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
 
       setUserData(response.data);
     } catch (error) {
@@ -51,14 +48,11 @@ function User() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(
-            `${API_DUMMY}/api/user/delete-user/` + id,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
+          await axios.delete(`${API_DUMMY}/api/user/delete-user/` + id, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
 
           Swal.fire({
             icon: "success",
@@ -124,11 +118,11 @@ function User() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <NavbarSuper />
+        <SidebarNavbar />
       </div>
-      <div className="flex flex-1">
-        <div className="fixed">
-          <Sidebar />
+      <div className="flex h-full">
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className="sm:ml-64 content-page container p-8  ml-0 md:ml-64">
           <div className="p-5 mt-10">
@@ -200,62 +194,72 @@ function User() {
                   </thead>
                   {/* <!-- Tabel Body --> */}
                   <tbody className="text-left">
-                    {paginatedUser.slice().reverse().map((user, index) => (
-                      <tr
-                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                        key={index}
-                      >
-                        <th
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                          {(currentPage - 1) * limit + index + 1}
-                        </th>
-                        <td className="px-6 py-4 capitalize">
-                          {user.username}
-                        </td>
-                        <td className="px-6 py-4">{user.email}</td>
-                        <td className="px-6 py-4 capitalize">
-                          {user.admin?.username}
-                        </td>
-                        <td className="py-3">
-                          <div className="flex items-center -space-x-4 ml-14">
-                            <a href={`/superadmin/detailU/${user.id}`}>
-                              <button className="z-20 block rounded-full border-2 border-white bg-blue-100 p-4 text-blue-700 active:bg-blue-50">
-                                <span className="relative inline-block">
-                                  <FontAwesomeIcon
-                                    icon={faInfo}
-                                    className="h-4 w-4"
-                                  />
-                                </span>
-                              </button>
-                            </a>
-                            <a href={`/superadmin/editU/${user.id}`}>
-                              <button className="z-30 block rounded-full border-2 border-white bg-yellow-100 p-4 text-yellow-700 active:bg-red-50">
-                                <span className="relative inline-block">
-                                  <FontAwesomeIcon
-                                    icon={faPenToSquare}
-                                    className="h-4 w-4"
-                                  />
-                                </span>
-                              </button>
-                            </a>
-
-                            <button
-                              className="z-30 block rounded-full border-2 border-white bg-red-100 p-4 text-red-700 active:bg-red-50"
-                              onClick={() => deleteData(user.id)}
+                    {paginatedUser.length > 0 ? (
+                      paginatedUser
+                        .slice()
+                        .reverse()
+                        .map((user, index) => (
+                          <tr
+                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                            key={user.id} // Menggunakan user.id sebagai kunci
+                          >
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                             >
-                              <span className="relative inline-block">
-                                <FontAwesomeIcon
-                                  icon={faTrash}
-                                  className="h-4 w-4"
-                                />
-                              </span>
-                            </button>
-                          </div>
+                              {(currentPage - 1) * limit + index + 1}
+                            </th>
+                            <td className="px-6 py-4 capitalize">
+                              {user.username}
+                            </td>
+                            <td className="px-6 py-4">{user.email}</td>
+                            <td className="px-6 py-4 capitalize">
+                              {user.admin?.username}
+                            </td>
+                            <td className="py-3">
+                              <div className="flex items-center -space-x-4 ml-14">
+                                <a href={`/superadmin/detailU/${user.id}`}>
+                                  <button className="z-20 block rounded-full border-2 border-white bg-blue-100 p-4 text-blue-700 active:bg-blue-50">
+                                    <span className="relative inline-block">
+                                      <FontAwesomeIcon
+                                        icon={faInfo}
+                                        className="h-4 w-4"
+                                      />
+                                    </span>
+                                  </button>
+                                </a>
+                                <a href={`/superadmin/editU/${user.id}`}>
+                                  <button className="z-30 block rounded-full border-2 border-white bg-yellow-100 p-4 text-yellow-700 active:bg-red-50">
+                                    <span className="relative inline-block">
+                                      <FontAwesomeIcon
+                                        icon={faPenToSquare}
+                                        className="h-4 w-4"
+                                      />
+                                    </span>
+                                  </button>
+                                </a>
+                                <button
+                                  className="z-30 block rounded-full border-2 border-white bg-red-100 p-4 text-red-700 active:bg-red-50"
+                                  onClick={() => deleteData(user.id)}
+                                >
+                                  <span className="relative inline-block">
+                                    <FontAwesomeIcon
+                                      icon={faTrash}
+                                      className="h-4 w-4"
+                                    />
+                                  </span>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="text-center py-4">
+                          Tidak ada data yang ditampilkan
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>

@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NavbarSuper from "../../../components/NavbarSuper";
 import Sidebar from "../../../components/SidebarUser";
-import {
-  useHistory,
-  useParams,
-} from "react-router-dom/cjs/react-router-dom.min";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -19,49 +16,45 @@ function EditUser() {
   const [shiftOptions, setShiftOptions] = useState([]);
   const { id } = useParams();
   const idSuperAdmin = localStorage.getItem("superadminId");
-  const [adminId, setAdminId] = useState(null);
-  const history = useHistory();
-
-  const getUser = async () => {
-    try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/user/getUserBy/${id}`
-      );
-      setUsername(res.data.username);
-      setIdJabatan(res.data.jabatan ? res.data.jabatan.idJabatan : "");
-      setIdShift(res.data.shift ? res.data.shift.id : "");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getJabatanOptions = async () => {
-    try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/jabatan/getBySuper/${idSuperAdmin}`
-      );
-      setJabatanOptions(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getShiftOptions = async () => {
-    try {
-      const res = await axios.get(
-        `${API_DUMMY}/api/shift/getBySuper/${idSuperAdmin}`
-      );
-      setShiftOptions(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
+    const getUser = async () => {
+      try {
+        const res = await axios.get(`${API_DUMMY}/api/user/getUserBy/${id}`);
+        setUsername(res.data.username);
+        setIdJabatan(res.data.jabatan ? res.data.jabatan.idJabatan : "");
+        setIdShift(res.data.shift ? res.data.shift.id : "");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getJabatanOptions = async () => {
+      try {
+        const res = await axios.get(
+          `${API_DUMMY}/api/jabatan/getBySuper/${idSuperAdmin}`
+        );
+        setJabatanOptions(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getShiftOptions = async () => {
+      try {
+        const res = await axios.get(
+          `${API_DUMMY}/api/shift/getBySuper/${idSuperAdmin}`
+        );
+        setShiftOptions(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getUser();
     getJabatanOptions();
     getShiftOptions();
-  }, [id, adminId]);
+  }, [id, idSuperAdmin]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -151,14 +144,17 @@ function EditUser() {
                           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                         >
                           {/* <option value="">Belum memiliki</option> */}
-                          {jabatanOptions.slice().reverse().map((option) => (
-                            <option
-                              key={option.idJabatan}
-                              value={option.idJabatan}
-                            >
-                              {option.namaJabatan}
-                            </option>
-                          ))}
+                          {jabatanOptions
+                            .slice()
+                            .reverse()
+                            .map((option) => (
+                              <option
+                                key={option.idJabatan}
+                                value={option.idJabatan}
+                              >
+                                {option.namaJabatan}
+                              </option>
+                            ))}
                         </select>
                       </div>
                       <div className="relative z-0 w-full mb-6 group">
@@ -176,11 +172,14 @@ function EditUser() {
                         >
                           {/* <option value="">Belum memiliki</option> */}
                           {shiftOptions &&
-                            shiftOptions.slice().reverse().map((option) => (
-                              <option key={option.id} value={option.id}>
-                                {option.namaShift}
-                              </option>
-                            ))}
+                            shiftOptions
+                              .slice()
+                              .reverse()
+                              .map((option) => (
+                                <option key={option.id} value={option.id}>
+                                  {option.namaShift}
+                                </option>
+                              ))}
                         </select>
                       </div>
                     </div>
