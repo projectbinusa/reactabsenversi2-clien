@@ -6,10 +6,9 @@ import Swal from "sweetalert2";
 import Loader from "../../../components/Loader";
 import { API_DUMMY } from "../../../utils/api";
 import SidebarNavbar from "../../../components/SidebarNavbar";
-import "../css/AbsenMasuk.css"
+import "../css/AbsenMasuk.css";
 
 function AbsenMasuk() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const webcamRef = useRef(null);
   const [keteranganTerlambat, setKeteranganTerlambat] = useState("");
@@ -94,10 +93,6 @@ function AbsenMasuk() {
     ucapan = "Selamat Malam";
   }
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
   const isWithinAllowedCoordinates = (lat, lon) => {
     return (
       lat > allowedCoordinates.south &&
@@ -111,6 +106,7 @@ function AbsenMasuk() {
     const imageSrc = webcamRef.current.getScreenshot();
     const imageBlob = await fetch(imageSrc).then((res) => res.blob());
 
+    setLoading(true);
     if (!latitude || !longitude) {
       Swal.fire("Error", "Lokasi belum tersedia", "error");
       return;
@@ -132,7 +128,7 @@ function AbsenMasuk() {
           formData.append("lokasiMasuk", `${address}`);
           formData.append("keteranganTerlambat", keteranganTerlambat || "-");
 
-          const response = await axios.post(
+           await axios.post(
             `${API_DUMMY}/api/absensi/masuk/${userId}`,
             formData,
             {
@@ -201,10 +197,7 @@ function AbsenMasuk() {
               <form onSubmit={(e) => e.preventDefault()}>
                 <p className="font-bold text-center mt-8">Foto:</p>
                 <div className="flex justify-center webcam-container">
-                  <Webcam 
-                    audio={false} 
-                    ref={webcamRef} 
-                  />
+                  <Webcam audio={false} ref={webcamRef} />
                 </div>
                 <div className="flex justify-center mt-6">
                   {fetchingLocation ? (

@@ -6,7 +6,6 @@ import { API_DUMMY } from "../../../utils/api";
 import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function AddCuti() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [awal_cuti, setAwalCuti] = useState("");
   const [akhir_cuti, setAkhirCuti] = useState("");
   const [masuk_kerja, setMasukKerja] = useState("");
@@ -60,9 +59,6 @@ function AddCuti() {
     }
   };
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
 
   const handleBack = () => {
     window.location.href = "/user/dashboard";

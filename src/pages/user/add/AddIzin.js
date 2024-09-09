@@ -6,7 +6,6 @@ import { API_DUMMY } from "../../../utils/api";
 import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function AddIzin() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [keteranganIzin, setKeteranganIzin] = useState("");
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
@@ -79,9 +78,7 @@ function AddIzin() {
     ucapan = "Selamat Malam";
   }
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+ 
 
   const handleBack = () => {
     window.location.href = "/user/dashboard";

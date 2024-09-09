@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/NavbarUser";
-import Sidebar from "../../../components/SidebarUser";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfo,
-  faSearch,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
