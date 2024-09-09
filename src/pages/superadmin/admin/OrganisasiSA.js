@@ -16,6 +16,7 @@ import Swal from "sweetalert2";
 import { API_DUMMY } from "../../../utils/api";
 
 import { Pagination } from "flowbite-react";
+import SidebarNavbar from "../../../components/SidebarNavbar";
 
 function OrganisasiSA() {
   const [userData, setUserData] = useState([]);
@@ -55,14 +56,11 @@ function OrganisasiSA() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(
-            `${API_DUMMY}/api/organisasi/delete/` + id,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
+          await axios.delete(`${API_DUMMY}/api/organisasi/delete/` + id, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
 
           Swal.fire({
             icon: "success",
@@ -134,11 +132,11 @@ function OrganisasiSA() {
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50">
-        <Navbar />
+        <SidebarNavbar />
       </div>
-      <div className="flex h-full pt-5">
-        <div className="fixed h-full">
-          <Sidebar />
+      <div className="flex h-full">
+        <div className="sticky top-16 z-40">
+          <Navbar />
         </div>
         <div className="sm:ml-64 content-page container p-8 ml-0 md:ml-64 mt-4 overflow-auto">
           <div className="p-5 mt-10">
@@ -215,71 +213,79 @@ function OrganisasiSA() {
                   </thead>
                   {/* <!-- Tabel Body --> */}
                   <tbody className="text-left">
-                    {paginatedOrganisasi.slice().reverse().map((admin, index) => (
-                      <tr
-                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                        key={index}
-                      >
-                        <th
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 dark:text-white"
+                    {paginatedOrganisasi.length > 0 ? (
+                      paginatedOrganisasi.slice().reverse().map((admin, index) => (
+                        <tr
+                          className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                          key={index}
                         >
-                          {(currentPage - 1) * limit + index + 1}
-                        </th>
-                        <td className="px-6 py-4 whitespace-nowrap capitalize">
-                          {admin.admin.username}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap capitalize">
-                          {admin.namaOrganisasi}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap capitalize">
-                          {admin.alamat}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {admin.nomerTelepon}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {admin.emailOrganisasi}
-                        </td>
-                        <td className="py-3">
-                          <div className="flex items-center -space-x-4">
-                            <a href={`/superadmin/detailO/${admin.id}`}>
-                              <button className="z-20 block rounded-full border-2 border-white bg-blue-100 p-4 text-blue-700 active:bg-blue-50">
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-gray-900 dark:text-white"
+                          >
+                            {(currentPage - 1) * limit + index + 1}
+                          </th>
+                          <td className="px-6 py-4 whitespace-nowrap capitalize">
+                            {admin.admin.username}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap capitalize">
+                            {admin.namaOrganisasi}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap capitalize">
+                            {admin.alamat}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {admin.nomerTelepon}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {admin.emailOrganisasi}
+                          </td>
+                          <td className="py-3">
+                            <div className="flex items-center -space-x-4">
+                              <a href={`/superadmin/detailO/${admin.id}`}>
+                                <button className="z-20 block rounded-full border-2 border-white bg-blue-100 p-4 text-blue-700 active:bg-blue-50">
+                                  <span className="relative inline-block">
+                                    <FontAwesomeIcon
+                                      icon={faInfo}
+                                      className="h-4 w-4"
+                                    />
+                                  </span>
+                                </button>
+                              </a>
+                              <a href={`/superadmin/editO/${admin.id}`}>
+                                <button className="z-30 block rounded-full border-2 border-white bg-yellow-100 p-4 text-yellow-700 active:bg-red-50">
+                                  <span className="relative inline-block">
+                                    <FontAwesomeIcon
+                                      icon={faPenToSquare}
+                                      className="h-4 w-4"
+                                    />
+                                  </span>
+                                </button>
+                              </a>
+                              <button
+                                className="z-30 block rounded-full border-2 border-white bg-red-100 p-4 text-red-700 active:bg-red-50"
+                                onClick={() => deleteData(admin.id)}
+                              >
                                 <span className="relative inline-block">
                                   <FontAwesomeIcon
-                                    icon={faInfo}
+                                    icon={faTrash}
                                     className="h-4 w-4"
                                   />
                                 </span>
                               </button>
-                            </a>
-                            <a href={`/superadmin/editO/${admin.id}`}>
-                              <button className="z-30 block rounded-full border-2 border-white bg-yellow-100 p-4 text-yellow-700 active:bg-red-50">
-                                <span className="relative inline-block">
-                                  <FontAwesomeIcon
-                                    icon={faPenToSquare}
-                                    className="h-4 w-4"
-                                  />
-                                </span>
-                              </button>
-                            </a>
-
-                            <button
-                              className="z-30 block rounded-full border-2 border-white bg-red-100 p-4 text-red-700 active:bg-red-50"
-                              onClick={() => deleteData(admin.id)}
-                            >
-                              <span className="relative inline-block">
-                                <FontAwesomeIcon
-                                  icon={faTrash}
-                                  className="h-4 w-4"
-                                />
-                              </span>
-                            </button>
-                          </div>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" className="text-center py-4">
+                          Tidak ada data yang ditampilkan
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
+
                 </table>
               </div>
               <Pagination

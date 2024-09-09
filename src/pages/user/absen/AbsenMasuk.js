@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import Loader from "../../../components/Loader";
 import { API_DUMMY } from "../../../utils/api";
 import SidebarNavbar from "../../../components/SidebarNavbar";
+import "../css/AbsenMasuk.css"
 
 function AbsenMasuk() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -27,6 +28,14 @@ function AbsenMasuk() {
     west: 110.30093865296837, // Pojok R. Guru
     east: 110.30157620693905, // Pojok Satpam
   };
+
+  // koordinat excelent
+  // const allowedCoordinates = {
+  //   northWest: { lat: -6.982580885, lon: 110.404028235 },
+  //   northEast: { lat: -6.982580885, lon: 110.404118565 },
+  //   southWest: { lat: -6.982670715, lon: 110.404028235 },
+  //   southEast: { lat: -6.982670715, lon: 110.404118565 },
+  // };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -191,8 +200,11 @@ function AbsenMasuk() {
               {error && <div className="text-red-500">{error}</div>}
               <form onSubmit={(e) => e.preventDefault()}>
                 <p className="font-bold text-center mt-8">Foto:</p>
-                <div className="flex justify-center">
-                  <Webcam audio={false} ref={webcamRef} />
+                <div className="flex justify-center webcam-container">
+                  <Webcam 
+                    audio={false} 
+                    ref={webcamRef} 
+                  />
                 </div>
                 <div className="flex justify-center mt-6">
                   {fetchingLocation ? (
